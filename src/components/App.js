@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AppRouter from './Router';
 import { auth } from '../firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(auth.currentUser);
@@ -10,20 +10,34 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setIsLoggedIn(true);
-        setUserObject({
-          displayName: user.displayName,
-          uid: user.uid,
-          email: user.email,
-          photoURL: user.photoURL,
-          meta: user.metadata,
-        });
+        if (user.displayName) {
+          setUserObject({
+            displayName: user.displayName,
+            uid: user.uid,
+            email: user.email,
+            photoURL: user.photoURL,
+            createdAt: user.metadata.creationTime,
+            provider: user.providerData[0].providerId,
+            emailVerified: user.emailVerified,
+          });
+          setIsLoggedIn(true);
+        } else {
+          setUserObject({
+            displayName: 'User',
+            uid: user.uid,
+            email: user.email,
+            photoURL: user.photoURL,
+            createdAt: user.metadata.creationTime,
+            provider: user.providerData[0].providerId,
+            emailVerified: user.emailVerified,
+          });
+        }
       } else {
         setUserObject(null);
         setIsLoggedIn(false);
       }
-      setIsLoading(false);
     });
+    setIsLoading(false);
   }, []);
   const refreshUser = () => {
     const user = auth.currentUser;
@@ -32,19 +46,12 @@ function App() {
       uid: user.uid,
       email: user.email,
       photoURL: user.photoURL,
-      meta: user.metadata,
+      meta: user.metadata.creationTime,
+      provider: user.providerData[0].providerId,
+      emailVerified: user.emailVerified,
     });
   };
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      setUserObject(null);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  console.log(userObject);
-  console.log(auth.currentUser);
+
   return (
     <>
       {isLoading ? (
@@ -55,7 +62,7 @@ function App() {
             isLoggedIn={isLoggedIn}
             refreshUser={refreshUser}
             userObject={userObject}
-            handleLogout={handleLogout}
+            setIsLoggedIn={setIsLoggedIn}
           />
         </>
       )}

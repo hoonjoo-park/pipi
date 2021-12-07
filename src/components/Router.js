@@ -7,47 +7,51 @@ import Header from './Header';
 import Profile from '../routes/Profile';
 import EditProfile from '../routes/EditProfile';
 
-function AppRouter({ isLoggedIn, refreshUser, userObject, handleLogout }) {
+function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
   return (
     <Router>
-      <Header
-        isLoggedIn={isLoggedIn}
-        handleLogout={handleLogout}
-        userObject={userObject}
-      />
+      <Header isLoggedIn={isLoggedIn} userObject={userObject} />
       <Routes>
-        {isLoggedIn ? (
-          <>
+        <>
+          {userObject ? (
+            <>
+              <Route
+                path={'/'}
+                exact
+                element={
+                  <Home refreshUser={refreshUser} userObject={userObject} />
+                }
+              />
+              <Route
+                path={'/profile'}
+                exact
+                element={<Profile userObject={userObject} />}
+              />
+              <Route
+                path={'/editProfile'}
+                exact
+                element={
+                  <EditProfile
+                    refreshUser={refreshUser}
+                    userObject={userObject}
+                  />
+                }
+              />
+            </>
+          ) : (
             <Route
               path={'/'}
               exact
               element={
-                <Home refreshUser={refreshUser} userObject={userObject} />
-              }
-            />
-            <Route
-              path={'/profile'}
-              exact
-              element={<Profile userObject={userObject} />}
-            />
-            <Route
-              path={'/editProfile'}
-              exact
-              element={
-                <EditProfile
+                <Auth
                   refreshUser={refreshUser}
                   userObject={userObject}
+                  setIsLoggedIn={setIsLoggedIn}
                 />
               }
             />
-          </>
-        ) : (
-          <Route
-            path={'/'}
-            exact
-            element={<Auth refreshUser={refreshUser} userObject={userObject} />}
-          />
-        )}
+          )}
+        </>
       </Routes>
       <Footer />
     </Router>

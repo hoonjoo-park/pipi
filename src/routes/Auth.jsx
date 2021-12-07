@@ -7,12 +7,13 @@ import {
   updateProfile,
 } from 'firebase/auth';
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import styled from 'styled-components';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
+import { addDoc, collection } from 'firebase/firestore';
 
-function Auth({ refreshUser, userObject }) {
+function Auth({ setIsLoggedIn, refreshUser, userObject }) {
   const [isJoin, setIsJoin] = useState(false);
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -44,13 +45,24 @@ function Auth({ refreshUser, userObject }) {
             email,
             password
           );
-          let user = userCredential.user;
-          updateProfile(user, { displayName: userName });
+          user = await userCredential.user;
+          await updateProfile(user, {
+            displayName: userName,
+            photoURL: `https://avatars.dicebear.com/api/adventurer-neutral/${user.uid}.svg?size=50`,
+          });
+          refreshUser();
+          await addDoc(collection(db, 'Users'), {
+            uid: auth.currentUser.uid,
+            displayName: auth.currentUser.displayName,
+            email: auth.currentUser.email,
+            photoURL: auth.currentUser.photoURL,
+          });
           setEmail('');
           setPassword('');
           setPassword2('');
           setUserName('');
           setIsJoin(false);
+          setIsLoggedIn(true);
         } catch (error) {
           console.log(error);
         }
@@ -65,7 +77,7 @@ function Auth({ refreshUser, userObject }) {
           password
         );
         user = userCredential.user;
-        console.log(user);
+        setIsLoggedIn(true);
       } catch (error) {
         console.log(error);
       }
