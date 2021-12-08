@@ -51,7 +51,7 @@ function App() {
       emailVerified: user.emailVerified,
     });
   };
-
+  console.log(userObject);
   return (
     <>
       {isLoading ? (

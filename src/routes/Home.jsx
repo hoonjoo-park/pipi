@@ -1,14 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { sendEmailVerification } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import styled from 'styled-components';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 
-function Home({ refreshUser, userObject }) {
+function Home({ userObject }) {
   const [isSent, setIsSent] = useState(false);
+  const [pipiText, setPipiText] = useState('');
+  const [pipiArray, setPipiArray] = useState([]);
   const handleVerify = () => {
     setIsSent(true);
     sendEmailVerification(auth.currentUser);
   };
+  const handlePipiChange = (e) => {
+    const {
+      target: { value },
+    } = e;
+    setPipiText(value);
+  };
+  const handlePipiSubmit = (e) => {
+    e.preventDefault();
+    addDoc(collection(db, 'Pipi'), {
+      owner: userObject,
+      text: pipiText,
+      createdAt: Date.now(),
+    });
+    setPipiText('');
+  };
+  const handleDelete = async (e) => {
+    const {
+      target: {
+        parentNode: { id },
+      },
+    } = e;
+    const ok = window.confirm('삭제하시겠습니까?');
+    if (ok) {
+      const toDelete = doc(db, 'Pipi', `${id}`);
+      await deleteDoc(toDelete);
+    }
+  };
+  useEffect(() => {
+    const querySet = query(
+      collection(db, 'Pipi'),
+      orderBy('createdAt', 'desc')
+    );
+    onSnapshot(querySet, (snapshot) => {
+      const newPipiArray = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPipiArray(newPipiArray);
+    });
+  }, []);
   return (
     <HomeContainer>
       {userObject.emailVerify ? (
@@ -20,7 +71,41 @@ function Home({ refreshUser, userObject }) {
           {isSent && <h3>{userObject.email}으로 메일이 전송되었습니다</h3>}
         </>
       ) : (
-        <div>Home</div>
+        <>
+          <div onSubmit={handlePipiSubmit}>
+            <img src={userObject.photoURL} alt="profile" />
+            <form>
+              <input
+                type="text"
+                name="pipiContent"
+                id="pipiContent"
+                value={pipiText}
+                onChange={handlePipiChange}
+                placeholder="당신의 삐삐를 날려보세요!"
+              />
+              <input type="submit" value="송신" />
+            </form>
+          </div>
+          <div>
+            <ul>
+              {pipiArray &&
+                pipiArray.map((pipi) => (
+                  <li id={pipi.id} key={pipi.id}>
+                    <div>
+                      <img src={pipi.owner.photoURL} alt="profile" />
+                      <span>{pipi.owner.displayName}</span>
+                    </div>
+                    <div>
+                      <span>{pipi.text}</span>
+                    </div>
+                    {userObject.uid === pipi.owner.uid && (
+                      <span onClick={handleDelete}>삭제</span>
+                    )}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </>
       )}
     </HomeContainer>
   );
