@@ -1,11 +1,17 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import Auth from '../routes/Auth';
 import Home from '../routes/Home';
 import Footer from './Footer';
 import Header from './Header';
 import Profile from '../routes/Profile';
 import EditProfile from '../routes/EditProfile';
+import Search from '../routes/Search';
 
 function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
   return (
@@ -23,12 +29,12 @@ function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
                 }
               />
               <Route
-                path={'/profile'}
+                path={'/profile/:id'}
                 exact
                 element={<Profile userObject={userObject} />}
               />
               <Route
-                path={'/editProfile'}
+                path={'/editProfile/:id'}
                 exact
                 element={
                   <EditProfile
@@ -37,6 +43,7 @@ function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
                   />
                 }
               />
+              <Route path={'/search'} exact element={<Search />} />
             </>
           ) : (
             <Route
@@ -52,6 +59,7 @@ function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
             />
           )}
         </>
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <Footer />
     </Router>

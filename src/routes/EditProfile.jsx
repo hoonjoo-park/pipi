@@ -1,11 +1,15 @@
 import { updateProfile, sendPasswordResetEmail } from 'firebase/auth';
+import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { auth, bucket } from '../firebase';
+import { auth, bucket, db } from '../firebase';
 function EditProfile({ refreshUser, userObject }) {
   const [newName, setNewName] = useState(`${userObject.displayName}`);
   const [newAvatar, setNewAvatar] = useState(`${userObject.photoURL}`);
+  let param = useParams();
+  let navigate = useNavigate();
   const handleChange = (e) => {
     const {
       target: { value },
@@ -38,11 +42,20 @@ function EditProfile({ refreshUser, userObject }) {
       setNewAvatar(newURL);
       await updateProfile(auth.currentUser, { photoURL: newURL });
       refreshUser();
+      const toUpdate = doc(db, 'Users', `${userObject.photoURL}`);
+      await updateDoc(toUpdate, {
+        photoURL: newURL,
+      });
     }
     if (newName !== userObject.displayName) {
+      const toUpdate = doc(db, 'Users', `${userObject.email}`);
+      await updateDoc(toUpdate, {
+        displayName: newName,
+      });
       await updateProfile(auth.currentUser, { displayName: newName });
       refreshUser();
     }
+    navigate('/');
   };
   const changePW = async () => {
     if (
@@ -57,20 +70,19 @@ function EditProfile({ refreshUser, userObject }) {
       }
     }
   };
+  useEffect(() => {
+    auth.currentUser.uid !== param.id && navigate('/');
+  }, [param.id]);
   return (
     <EditProfileContainer>
-      <form onSubmit={handleSubmit}>
+      <EditForm onSubmit={handleSubmit}>
         <div>
-          <img
-            src={newAvatar}
-            style={{ width: 50, height: 50 }}
-            alt="Profile"
-          />
+          <ProfileImage src={newAvatar} alt="Profile" />
           {newAvatar !== userObject.photoURL && (
             <span onClick={handleCancel}>초기화</span>
           )}
         </div>
-        <label htmlFor="editFile">파일 선택</label>
+        <FileLabel htmlFor="editFile">파일 선택</FileLabel>
         <input
           type="file"
           accept="image/*"
@@ -79,7 +91,7 @@ function EditProfile({ refreshUser, userObject }) {
           onChange={handleFile}
           style={{ display: 'none' }}
         />
-        <input
+        <EditInput
           type="text"
           name="editUserName"
           id="editUserName"
@@ -87,7 +99,7 @@ function EditProfile({ refreshUser, userObject }) {
           onChange={handleChange}
           value={newName}
         />
-        <input
+        <EditInput
           type="email"
           name="editEmail"
           id="editEmail"
@@ -96,16 +108,77 @@ function EditProfile({ refreshUser, userObject }) {
         />
         {userObject.provider === 'password' && (
           <>
-            <span onClick={changePW}>비밀번호 변경하기</span>
+            <ChangePW onClick={changePW}>비밀번호 변경하기</ChangePW>
           </>
         )}
-        <input type="submit" value="수정" />
-      </form>
+        <EditFinish type="submit" value="수정" />
+      </EditForm>
     </EditProfileContainer>
   );
 }
 
 export default EditProfile;
 const EditProfileContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100vw;
+  height: 75vh;
+`;
+const EditForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30vw;
+  height: 85%;
+  margin: auto;
+  padding: 2.5em;
+  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
+  border-radius: 15px;
+`;
+const ProfileImage = styled.img`
+  width: 7rem;
+  border-radius: 15px;
+  margin-bottom: 1rem;
+`;
+const FileLabel = styled.label`
+  width: 7rem;
+  height: 1.8rem;
+  text-align: center;
+  line-height: 1.8rem;
+  border-radius: 15px;
+  border: 1px solid #eaeaea;
+  margin-bottom: 3rem;
+  cursor: pointer;
+`;
+const EditInput = styled.input`
+  width: 50%;
+  height: 2.2rem;
+  border: none;
+  border-bottom: 2px solid #eaeaea;
+  margin-bottom: 2rem;
+  padding: 1em;
+  outline: none;
+`;
+const EditFinish = styled.input`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  border-radius: 15px;
+  height: 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  background-color: #1fab89;
+  color: #ffffff;
+`;
+const ChangePW = styled.button`
+  width: 50%;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  border-radius: 15px;
+  border: 1px solid #6768ab;
+  color: #6768ab;
+  margin-bottom: 1.5rem;
 `;

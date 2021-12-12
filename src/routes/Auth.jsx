@@ -11,9 +11,9 @@ import { auth, db } from '../firebase';
 import styled from 'styled-components';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
-function Auth({ setIsLoggedIn, refreshUser, userObject }) {
+function Auth({ setIsLoggedIn, refreshUser }) {
   const [isJoin, setIsJoin] = useState(false);
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -51,7 +51,7 @@ function Auth({ setIsLoggedIn, refreshUser, userObject }) {
             photoURL: `https://avatars.dicebear.com/api/adventurer-neutral/${user.uid}.svg?size=50`,
           });
           refreshUser();
-          await addDoc(collection(db, 'Users'), {
+          await setDoc(doc(db, 'Users', auth.currentUser.email), {
             uid: auth.currentUser.uid,
             displayName: auth.currentUser.displayName,
             email: auth.currentUser.email,
@@ -104,6 +104,7 @@ function Auth({ setIsLoggedIn, refreshUser, userObject }) {
       <AuthForm onSubmit={handleSubmit}>
         {isJoin ? (
           <>
+            <FormTitle>회원가입</FormTitle>
             <AuthInputs
               type="text"
               name="userName"
@@ -143,6 +144,7 @@ function Auth({ setIsLoggedIn, refreshUser, userObject }) {
           </>
         ) : (
           <>
+            <FormTitle>로그인</FormTitle>
             <AuthInputs
               type="email"
               name="email"
@@ -161,20 +163,20 @@ function Auth({ setIsLoggedIn, refreshUser, userObject }) {
               required
               onChange={handleChange}
             />
-            <button name="google" onClick={handleSocial}>
-              구글로 로그인
-              <FcGoogle />
-            </button>
-            <button name="github" onClick={handleSocial}>
-              깃헙으로 로그인
-              <FaGithub />
-            </button>
+            <ButtonBox name="google" onClick={handleSocial}>
+              <span>구글로 로그인</span>
+              <FcGoogle style={{ fontSize: '1.3rem', width: '15%' }} />
+            </ButtonBox>
+            <ButtonBox name="github" onClick={handleSocial}>
+              <span>깃헙으로 로그인</span>
+              <FaGithub style={{ fontSize: '1.3rem', width: '15%' }} />
+            </ButtonBox>
           </>
         )}
 
         <AuthButton type="submit" value={isJoin ? '회원가입' : '로그인'} />
         <AuthSuggestion onClick={handleIsJoin}>
-          {isJoin ? '로그인하기' : '아직 회원이 아니신가요?'}
+          {isJoin ? '이미 회원이신가요?' : '아직 회원이 아니신가요?'}
         </AuthSuggestion>
       </AuthForm>
     </AuthContainer>
@@ -184,30 +186,67 @@ function Auth({ setIsLoggedIn, refreshUser, userObject }) {
 export default Auth;
 
 const AuthContainer = styled.div`
-  width: 75vw;
-  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 75vh;
 `;
-
 const AuthForm = styled.form`
-  width: 70%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 30vw;
+  height: 85%;
   margin: auto;
+  padding: 1em;
+  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
+  border-radius: 15px;
 `;
-
+const FormTitle = styled.h3`
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 2em 0 2.5em 0;
+`;
 const AuthInputs = styled.input`
-  width: 40%;
+  width: 50%;
+  height: 2.2rem;
   border: none;
-  margin-bottom: 1rem;
+  border-bottom: 2px solid #eaeaea;
+  margin-bottom: 2rem;
+  padding: 1em;
   outline: none;
 `;
+
+const ButtonBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height: 2.5em;
+  border: 1px solid #eaeaea;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  & > span {
+    font-weight: 500;
+    transform: translateY(10%);
+  }
+`;
+
 const AuthButton = styled.input`
   border: none;
-  width: 10%;
-  margin-bottom: 1rem;
+  width: 50%;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  background-color: #1fab89;
+  margin-bottom: 3.5rem;
+  border-radius: 15px;
+  color: #ffffff;
   cursor: pointer;
 `;
 const AuthSuggestion = styled.span`
+  text-decoration: underline;
+  color: #6768ab;
   cursor: pointer;
 `;

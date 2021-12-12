@@ -5,12 +5,13 @@ import styled from 'styled-components';
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
 } from 'firebase/firestore';
+import Pipi from '../components/Pipi';
 
 function Home({ userObject }) {
   const [isSent, setIsSent] = useState(false);
@@ -29,35 +30,25 @@ function Home({ userObject }) {
   const handlePipiSubmit = (e) => {
     e.preventDefault();
     addDoc(collection(db, 'Pipi'), {
-      owner: userObject,
+      owner: doc(db, 'Users', `${userObject.email}`),
       text: pipiText,
-      createdAt: Date.now(),
+      createdAt: new Date(Date.now()),
     });
     setPipiText('');
-  };
-  const handleDelete = async (e) => {
-    const {
-      target: {
-        parentNode: { id },
-      },
-    } = e;
-    const ok = window.confirm('삭제하시겠습니까?');
-    if (ok) {
-      const toDelete = doc(db, 'Pipi', `${id}`);
-      await deleteDoc(toDelete);
-    }
   };
   useEffect(() => {
     const querySet = query(
       collection(db, 'Pipi'),
       orderBy('createdAt', 'desc')
     );
-    onSnapshot(querySet, (snapshot) => {
+    onSnapshot(querySet, async (snapshot) => {
       const newPipiArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setPipiArray(newPipiArray);
+      let setting = newPipiArray;
+      setting[0]['owner'] = (await getDoc(newPipiArray[0]['owner'])).data();
+      setPipiArray(setting);
     });
   }, []);
   return (
@@ -72,10 +63,10 @@ function Home({ userObject }) {
         </>
       ) : (
         <>
-          <div onSubmit={handlePipiSubmit}>
+          <FormContainer onSubmit={handlePipiSubmit}>
             <img src={userObject.photoURL} alt="profile" />
             <form>
-              <input
+              <FormText
                 type="text"
                 name="pipiContent"
                 id="pipiContent"
@@ -83,28 +74,17 @@ function Home({ userObject }) {
                 onChange={handlePipiChange}
                 placeholder="당신의 삐삐를 날려보세요!"
               />
-              <input type="submit" value="송신" />
+              <SendBtn type="submit" value="송신" />
             </form>
-          </div>
-          <div>
-            <ul>
+          </FormContainer>
+          <PipiContainer>
+            <PipiBox>
               {pipiArray &&
                 pipiArray.map((pipi) => (
-                  <li id={pipi.id} key={pipi.id}>
-                    <div>
-                      <img src={pipi.owner.photoURL} alt="profile" />
-                      <span>{pipi.owner.displayName}</span>
-                    </div>
-                    <div>
-                      <span>{pipi.text}</span>
-                    </div>
-                    {userObject.uid === pipi.owner.uid && (
-                      <span onClick={handleDelete}>삭제</span>
-                    )}
-                  </li>
+                  <Pipi key={pipi.id} pipi={pipi} userObject={userObject} />
                 ))}
-            </ul>
-          </div>
+            </PipiBox>
+          </PipiContainer>
         </>
       )}
     </HomeContainer>
@@ -114,5 +94,51 @@ function Home({ userObject }) {
 export default Home;
 
 const HomeContainer = styled.div`
-  width: 100vw;
+  height: 90vh;
+  width: 76vw;
+  margin: auto;
+  padding: 1em;
+`;
+const FormContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 50%;
+  height: 20%;
+  margin: 1rem auto 5% auto;
+  border: 1px solid #eaeaea;
+  border-radius: 20px;
+  & > form {
+    display: flex;
+    align-items: center;
+    flex-basis: 80%;
+  }
+  & > img {
+    display: block;
+    height: 5rem;
+    width: 5rem;
+    border-radius: 15px;
+  }
+`;
+const FormText = styled.input`
+  height: 100%;
+  width: 80%;
+  resize: none;
+`;
+const SendBtn = styled.input`
+  width: 5rem;
+  background-color: #eaeaea;
+  border-radius: 10px;
+  padding: 0.8em;
+`;
+const PipiContainer = styled.div`
+  width: 100%;
+`;
+const PipiBox = styled.div`
+  /* display: flex;
+  width: 50%;
+  height: 8rem;
+  margin: auto;
+  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
+  border-radius: 15px; */
 `;
