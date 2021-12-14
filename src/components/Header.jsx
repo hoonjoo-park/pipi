@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { PhoneLogo } from '../Image';
 
 function Header({ userObject }) {
   return (
     <Nav>
-      <Logo to="/">삐삐</Logo>
+      <Logo to="/">
+        <img src={PhoneLogo} />
+        삐삐
+      </Logo>
       {userObject && (
         <MenuBox>
           <Link to="/">Home</Link>
@@ -29,10 +33,21 @@ const Nav = styled.nav`
 `;
 const ProfileLink = styled(Link)``;
 const Logo = styled(Link)`
+  display: flex;
+  align-items: center;
   font-size: 1.5rem;
   font-weight: 700;
   margin-left: 12vw;
   padding: 1em;
+  &:hover > img {
+    transform: scale(1.1);
+  }
+  & > img {
+    width: 1.7rem;
+    margin-right: 1.2rem;
+    transform: translateY(-12%) rotate(18deg);
+    transition: all 0.2s ease-in-out;
+  }
 `;
 const MenuBox = styled.div`
   display: flex;

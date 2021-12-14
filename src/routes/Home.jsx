@@ -73,6 +73,7 @@ function Home({ userObject }) {
                 value={pipiText}
                 onChange={handlePipiChange}
                 placeholder="당신의 삐삐를 날려보세요!"
+                autoComplete="off"
               />
               <SendBtn type="submit" value="송신" />
             </form>
@@ -126,19 +127,20 @@ const FormText = styled.input`
   resize: none;
 `;
 const SendBtn = styled.input`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #ffffff;
   width: 5rem;
-  background-color: #eaeaea;
+  background-color: #6768ab;
   border-radius: 10px;
   padding: 0.8em;
+  cursor: pointer;
 `;
 const PipiContainer = styled.div`
   width: 100%;
 `;
 const PipiBox = styled.div`
-  /* display: flex;
-  width: 50%;
-  height: 8rem;
-  margin: auto;
-  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
-  border-radius: 15px; */
+  width: 100%;
 `;

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import styled from 'styled-components';
+import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 
 function Pipi({ pipi, userObject }) {
   const [newPipi, setNewPipi] = useState(pipi.text);
@@ -49,7 +51,7 @@ function Pipi({ pipi, userObject }) {
         </>
       ) : (
         <>
-          <ProfileBox>
+          <ProfileBox to={`/profile/${pipi.owner.uid}`}>
             <PipiProfile src={pipi.owner.photoURL} alt="profile" />
             <span>{pipi.owner.displayName}</span>
           </ProfileBox>
@@ -58,8 +60,12 @@ function Pipi({ pipi, userObject }) {
           </TextBox>
           {userObject.uid === pipi.owner.uid && (
             <EditBox id="editBox">
-              <span onClick={handleDelete}>삭제</span>
-              <span onClick={toggleUpdate}>수정</span>
+              <span onClick={toggleUpdate}>
+                <AiFillEdit />
+              </span>
+              <span onClick={handleDelete}>
+                <AiFillDelete />
+              </span>
             </EditBox>
           )}
         </>
@@ -73,14 +79,19 @@ export default Pipi;
 const PipiItem = styled.div`
   display: flex;
   position: relative;
-  width: 100%;
+  width: 50%;
+  height: 10rem;
+  margin: auto;
+  padding: 1em;
+  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
+  border-radius: 15px;
   &:hover #editBox {
     /* display: flex; */
     opacity: 1;
   }
 `;
 
-const ProfileBox = styled.div`
+const ProfileBox = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,8 +119,19 @@ const EditBox = styled.div`
   opacity: 0;
   display: flex;
   justify-content: space-evenly;
-  width: 12%;
+  width: 13%;
   right: 3%;
-  top: 10%;
+  top: 12%;
+  font-size: 1.2rem;
   transition: all 0.2s ease-in;
+  & > span {
+    padding: 0.2em;
+    cursor: pointer;
+  }
+  & > :first-child {
+    color: #6768ab;
+  }
+  & > :last-child {
+    color: #d64f78;
+  }
 `;

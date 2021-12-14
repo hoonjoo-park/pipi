@@ -30,9 +30,10 @@ function Profile({ userObject }) {
             <Edit to={`/editProfile/${userObject.uid}`}>프로필 수정</Edit>
           </>
         )}
-        {userObject.uid === auth.currentUser.uid && (
-          <FriendReq>친구요청</FriendReq>
-        )}
+        {userObject.uid === auth.currentUser.uid &&
+          userObject.uid !== auth.currentUser.uid && (
+            <FriendReq>친구요청</FriendReq>
+          )}
       </ProfileBox>
     </ProfileContainer>
   );
