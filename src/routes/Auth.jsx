@@ -13,7 +13,7 @@ import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { doc, setDoc } from 'firebase/firestore';
 
-function Auth({ setIsLoggedIn, refreshUser }) {
+function Auth({ refreshUser }) {
   const [isJoin, setIsJoin] = useState(false);
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -62,7 +62,6 @@ function Auth({ setIsLoggedIn, refreshUser }) {
           setPassword2('');
           setUserName('');
           setIsJoin(false);
-          setIsLoggedIn(true);
         } catch (error) {
           console.log(error);
         }
@@ -77,7 +76,6 @@ function Auth({ setIsLoggedIn, refreshUser }) {
           password
         );
         user = userCredential.user;
-        setIsLoggedIn(true);
       } catch (error) {
         console.log(error);
       }

@@ -12,11 +12,12 @@ import Header from './Header';
 import Profile from '../routes/Profile';
 import EditProfile from '../routes/EditProfile';
 import Search from '../routes/Search';
+import MyProfile from '../routes/MyProfile';
 
-function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
+function AppRouter({ refreshUser, userObject }) {
   return (
     <Router>
-      <Header isLoggedIn={isLoggedIn} userObject={userObject} />
+      <Header userObject={userObject} />
       <Routes>
         <>
           {userObject ? (
@@ -29,10 +30,11 @@ function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
                 }
               />
               <Route
-                path={'/profile/:id'}
+                path={'/myProfile'}
                 exact
-                element={<Profile userObject={userObject} />}
+                element={<MyProfile userObject={userObject} />}
               />
+              <Route path={'/profile/:id'} exact element={<Profile />} />
               <Route
                 path={'/editProfile/:id'}
                 exact
@@ -50,11 +52,7 @@ function AppRouter({ isLoggedIn, setIsLoggedIn, refreshUser, userObject }) {
               path={'/'}
               exact
               element={
-                <Auth
-                  refreshUser={refreshUser}
-                  userObject={userObject}
-                  setIsLoggedIn={setIsLoggedIn}
-                />
+                <Auth refreshUser={refreshUser} userObject={userObject} />
               }
             />
           )}

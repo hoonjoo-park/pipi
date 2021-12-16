@@ -4,7 +4,6 @@ import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(auth.currentUser);
   const [userObject, setUserObject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -20,7 +19,6 @@ function App() {
             provider: user.providerData[0].providerId,
             emailVerified: user.emailVerified,
           });
-          setIsLoggedIn(true);
         } else {
           setUserObject({
             displayName: 'User',
@@ -34,7 +32,6 @@ function App() {
         }
       } else {
         setUserObject(null);
-        setIsLoggedIn(false);
       }
     });
     setIsLoading(false);
@@ -51,19 +48,13 @@ function App() {
       emailVerified: user.emailVerified,
     });
   };
-  console.log(userObject);
   return (
     <>
       {isLoading ? (
         'Loading...'
       ) : (
         <>
-          <AppRouter
-            isLoggedIn={isLoggedIn}
-            refreshUser={refreshUser}
-            userObject={userObject}
-            setIsLoggedIn={setIsLoggedIn}
-          />
+          <AppRouter refreshUser={refreshUser} userObject={userObject} />
         </>
       )}
     </>

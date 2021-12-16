@@ -6,7 +6,6 @@ import {
   addDoc,
   collection,
   doc,
-  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -42,13 +41,11 @@ function Home({ userObject }) {
       orderBy('createdAt', 'desc')
     );
     onSnapshot(querySet, async (snapshot) => {
-      const newPipiArray = snapshot.docs.map((doc) => ({
+      const newPipiArray = await snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      let setting = newPipiArray;
-      setting[0]['owner'] = (await getDoc(newPipiArray[0]['owner'])).data();
-      setPipiArray(setting);
+      setPipiArray(newPipiArray);
     });
   }, []);
   return (
@@ -80,7 +77,7 @@ function Home({ userObject }) {
           </FormContainer>
           <PipiContainer>
             <PipiBox>
-              {pipiArray &&
+              {pipiArray.length > 0 &&
                 pipiArray.map((pipi) => (
                   <Pipi key={pipi.id} pipi={pipi} userObject={userObject} />
                 ))}
@@ -95,7 +92,8 @@ function Home({ userObject }) {
 export default Home;
 
 const HomeContainer = styled.div`
-  height: 90vh;
+  min-height: 90vh;
+  height: 100%;
   width: 76vw;
   margin: auto;
   padding: 1em;
@@ -105,8 +103,8 @@ const FormContainer = styled.div`
   align-items: center;
   justify-content: space-evenly;
   width: 50%;
-  height: 20%;
-  margin: 1rem auto 5% auto;
+  height: 10rem;
+  margin: 5rem auto;
   border: 1px solid #eaeaea;
   border-radius: 20px;
   & > form {

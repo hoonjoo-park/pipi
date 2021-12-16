@@ -48,7 +48,11 @@ function Search() {
           {isFound ? (
             <ResultLi
               key={searchResult.uid}
-              onClick={() => navigate(`/profile/${searchResult.uid}`)}
+              onClick={() =>
+                navigate(`/profile/${searchResult.uid}`, {
+                  state: { searchResult: searchResult },
+                })
+              }
             >
               <img src={searchResult.photoURL} alt="profile" />
               <div>

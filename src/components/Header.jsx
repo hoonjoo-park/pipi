@@ -7,14 +7,14 @@ function Header({ userObject }) {
   return (
     <Nav>
       <Logo to="/">
-        <img src={PhoneLogo} />
+        <img src={PhoneLogo} alt="logo" />
         삐삐
       </Logo>
       {userObject && (
         <MenuBox>
           <Link to="/">Home</Link>
           <Link to="/search">검색</Link>
-          <ProfileLink to={`/profile/${userObject.uid}`}>
+          <ProfileLink to={`/myProfile`}>
             {userObject ? `${userObject.displayName}` : '프로필'}
           </ProfileLink>
         </MenuBox>

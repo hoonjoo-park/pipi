@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import styled from 'styled-components';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
+import { MdOutlineCancel } from 'react-icons/md';
 
 function Pipi({ pipi, userObject }) {
   const [newPipi, setNewPipi] = useState(pipi.text);
   const [isEdit, setIsEdit] = useState(false);
+  const [owner, setOwner] = useState({});
   const handleChange = (e) => {
     const {
       target: { value },
@@ -33,42 +35,45 @@ function Pipi({ pipi, userObject }) {
     });
     setIsEdit((prev) => !prev);
   };
+  useEffect(() => {
+    const converter = async () => {
+      let convert = await getDoc(pipi.owner);
+      setOwner(convert.data());
+    };
+    converter();
+  }, []);
   return (
     <PipiItem id={pipi.id}>
+      <ProfileBox to={`/profile/${owner.uid}`}>
+        <PipiProfile src={owner.photoURL} alt="profile" />
+        <span>{owner.displayName}</span>
+      </ProfileBox>
       {isEdit ? (
         <>
-          <form onSubmit={handleUpdate}>
-            <ProfileBox>
-              <PipiProfile src={pipi.owner.photoURL} alt="profile" />
-              <span>{pipi.owner.displayName}</span>
-            </ProfileBox>
+          <EditForm onSubmit={handleUpdate}>
             <TextBox>
-              <input type="text" value={newPipi} onChange={handleChange} />
+              <EditInput type="text" value={newPipi} onChange={handleChange} />
             </TextBox>
-            <input type="submit" value="수정" />
-          </form>
-          <button onClick={toggleUpdate}>취소</button>
+            <EditSubmit type="submit" value="수정" />
+          </EditForm>
+          <EditCancelBtn onClick={toggleUpdate}>
+            <MdOutlineCancel />
+          </EditCancelBtn>
         </>
       ) : (
-        <>
-          <ProfileBox to={`/profile/${pipi.owner.uid}`}>
-            <PipiProfile src={pipi.owner.photoURL} alt="profile" />
-            <span>{pipi.owner.displayName}</span>
-          </ProfileBox>
-          <TextBox>
-            <span>{pipi.text}</span>
-          </TextBox>
-          {userObject.uid === pipi.owner.uid && (
-            <EditBox id="editBox">
-              <span onClick={toggleUpdate}>
-                <AiFillEdit />
-              </span>
-              <span onClick={handleDelete}>
-                <AiFillDelete />
-              </span>
-            </EditBox>
-          )}
-        </>
+        <TextBox>
+          <span>{pipi.text}</span>
+        </TextBox>
+      )}
+      {userObject.uid === owner.uid && !isEdit && (
+        <EditBox id="editBox">
+          <span onClick={toggleUpdate}>
+            <AiFillEdit />
+          </span>
+          <span onClick={handleDelete}>
+            <AiFillDelete />
+          </span>
+        </EditBox>
       )}
     </PipiItem>
   );
@@ -81,12 +86,11 @@ const PipiItem = styled.div`
   position: relative;
   width: 50%;
   height: 10rem;
-  margin: auto;
+  margin: 2rem auto;
   padding: 1em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
   border-radius: 15px;
   &:hover #editBox {
-    /* display: flex; */
     opacity: 1;
   }
 `;
@@ -113,6 +117,36 @@ const TextBox = styled.div`
   & > span {
     width: 100%;
   }
+`;
+const EditForm = styled.form`
+  display: flex;
+  align-items: center;
+  width: 90%;
+`;
+const EditInput = styled.input`
+  width: 90%;
+  color: #9b9a9a;
+`;
+const EditSubmit = styled.input`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #ffffff;
+  height: 2.8rem;
+  width: 5rem;
+  background-color: #1fab89;
+  border-radius: 10px;
+  padding: 0.8em;
+  cursor: pointer;
+`;
+const EditCancelBtn = styled.button`
+  position: absolute;
+  cursor: pointer;
+  color: #d64f78;
+  top: 8%;
+  right: 2%;
+  font-size: 1.2rem;
 `;
 const EditBox = styled.div`
   position: absolute;
