@@ -31,7 +31,7 @@ function Home({ userObject }) {
     addDoc(collection(db, 'Pipi'), {
       owner: doc(db, 'Users', `${userObject.email}`),
       text: pipiText,
-      createdAt: new Date(Date.now()),
+      createdAt: Date.now(),
     });
     setPipiText('');
   };
@@ -60,7 +60,7 @@ function Home({ userObject }) {
         </>
       ) : (
         <>
-          <FormContainer onSubmit={handlePipiSubmit}>
+          {/* <FormContainer onSubmit={handlePipiSubmit}>
             <img src={userObject.photoURL} alt="profile" />
             <form>
               <FormText
@@ -74,7 +74,16 @@ function Home({ userObject }) {
               />
               <SendBtn type="submit" value="송신" />
             </form>
-          </FormContainer>
+          </FormContainer> */}
+          <ProfileBox>
+            <img
+              src={userObject.photoURL}
+              style={{ borderRadius: '50%' }}
+              alt="profile"
+            />
+            <h3>{userObject.displayName}</h3>
+            <hr />
+          </ProfileBox>
           <PipiContainer>
             <PipiBox>
               {pipiArray.length > 0 &&
@@ -94,9 +103,33 @@ export default Home;
 const HomeContainer = styled.div`
   min-height: 90vh;
   height: 100%;
-  width: 76vw;
+  width: 70vw;
   margin: auto;
   padding: 1em;
+`;
+const ProfileBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 2rem;
+  & > img {
+    width: 5rem;
+    margin-bottom: 1rem;
+  }
+  & > h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  & > hr {
+    width: 100%;
+    height: 2px;
+    background-color: #eaeaea;
+    border: none;
+    border-radius: 10px;
+  }
 `;
 const FormContainer = styled.div`
   display: flex;

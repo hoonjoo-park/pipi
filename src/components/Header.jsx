@@ -30,6 +30,7 @@ const Nav = styled.nav`
   align-items: center;
   width: 100vw;
   height: 10vh;
+  box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
 `;
 const ProfileLink = styled(Link)``;
 const Logo = styled(Link)`
@@ -37,7 +38,7 @@ const Logo = styled(Link)`
   align-items: center;
   font-size: 1.5rem;
   font-weight: 700;
-  margin-left: 12vw;
+  margin-left: 15vw;
   padding: 1em;
   &:hover > img {
     transform: scale(1.1);
@@ -53,15 +54,15 @@ const MenuBox = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  width: 40%;
+  width: 30%;
   height: 100%;
   gap: 1rem;
   margin-left: auto;
-  margin-right: 12vw;
+  margin-right: 15vw;
   & > * {
     text-align: center;
     padding: 1em;
-    width: 15%;
+    width: 18%;
     font-weight: 700;
     font-size: 1.1rem;
   }

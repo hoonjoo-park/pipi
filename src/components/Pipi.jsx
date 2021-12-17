@@ -42,6 +42,17 @@ function Pipi({ pipi, userObject }) {
     };
     converter();
   }, []);
+  const convertDate = (date) => {
+    let year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString();
+    let day = date.getDate().toString();
+    let hour = date.getHours().toString();
+    let minute = date.getMinutes().toString();
+    return `${year}.${month.padStart(2, '0')}.${day.padStart(
+      2,
+      '0'
+    )}  ${hour.padStart(2, ' 0')}:${minute.padStart(2, '0')}`;
+  };
   return (
     <PipiItem id={pipi.id}>
       <ProfileBox to={`/profile/${owner.uid}`}>
@@ -61,9 +72,12 @@ function Pipi({ pipi, userObject }) {
           </EditCancelBtn>
         </>
       ) : (
-        <TextBox>
-          <span>{pipi.text}</span>
-        </TextBox>
+        <>
+          <PipiTime>{convertDate(new Date(pipi.createdAt))}</PipiTime>
+          <TextBox>
+            <span>{pipi.text}</span>
+          </TextBox>
+        </>
       )}
       {userObject.uid === owner.uid && !isEdit && (
         <EditBox id="editBox">
@@ -107,6 +121,12 @@ const PipiProfile = styled.img`
   width: 5rem;
   border-radius: 15px;
   margin-bottom: 10%;
+`;
+const PipiTime = styled.span`
+  position: absolute;
+  top: 20%;
+  left: 21%;
+  color: #9b9a9a;
 `;
 const TextBox = styled.div`
   width: 80%;

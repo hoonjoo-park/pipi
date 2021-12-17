@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AppRouter from './Router';
 import { auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import Loading from './Loading';
 
 function App() {
   const [userObject, setUserObject] = useState(null);
@@ -33,8 +34,8 @@ function App() {
       } else {
         setUserObject(null);
       }
+      setIsLoading(false);
     });
-    setIsLoading(false);
   }, []);
   const refreshUser = () => {
     const user = auth.currentUser;
@@ -51,7 +52,7 @@ function App() {
   return (
     <>
       {isLoading ? (
-        'Loading...'
+        <Loading />
       ) : (
         <>
           <AppRouter refreshUser={refreshUser} userObject={userObject} />
