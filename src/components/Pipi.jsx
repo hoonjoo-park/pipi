@@ -97,9 +97,12 @@ export default Pipi;
 
 const PipiItem = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
-  width: 50%;
-  height: 10rem;
+  width: 80%;
+  height: 18rem;
   margin: 2rem auto;
   padding: 1em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
@@ -114,28 +117,31 @@ const ProfileBox = styled(Link)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 15%;
+  margin-top: 1rem;
+  width: 100%;
 `;
 const PipiProfile = styled.img`
   height: 5rem;
   width: 5rem;
   border-radius: 15px;
-  margin-bottom: 10%;
+  margin-bottom: 5%;
 `;
 const PipiTime = styled.span`
   position: absolute;
-  top: 20%;
-  left: 21%;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
   color: #9b9a9a;
 `;
 const TextBox = styled.div`
-  width: 80%;
+  width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  padding-left: 5%;
+  /* align-items: flex-start; */
   & > span {
     width: 100%;
+    margin-top: 3rem;
+    text-align: center;
   }
 `;
 const EditForm = styled.form`
@@ -174,8 +180,8 @@ const EditBox = styled.div`
   display: flex;
   justify-content: space-evenly;
   width: 13%;
-  right: 3%;
-  top: 12%;
+  right: 8%;
+  top: 3%;
   font-size: 1.2rem;
   transition: all 0.2s ease-in;
   & > span {

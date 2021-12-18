@@ -173,5 +173,7 @@ const PipiContainer = styled.div`
   width: 100%;
 `;
 const PipiBox = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   width: 100%;
 `;
