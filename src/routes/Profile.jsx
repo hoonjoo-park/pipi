@@ -1,24 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../firebase';
+import Loading from '../components/Loading';
 
 function Profile() {
-  const location = useLocation();
-  const {
-    state: { searchResult },
-  } = location;
+  const [friendObj, setFriendObj] = useState({});
+  const { id } = useParams();
+  const getUser = async () => {
+    const docRef = collection(db, 'Users');
+    const q = query(docRef, where('uid', '==', id));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setFriendObj(doc.data());
+    });
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
   return (
-    <ProfileContainer>
-      <ProfileBox>
-        <ProfileImage
-          src={searchResult.photoURL && searchResult.photoURL}
-          alt="profile"
-        />
-        <ProfileLi>{searchResult && searchResult.displayName}</ProfileLi>
-        <ProfileLi>{searchResult && searchResult.email}</ProfileLi>
-        <FriendReq>친구요청</FriendReq>
-      </ProfileBox>
-    </ProfileContainer>
+    <>
+      {!friendObj ? (
+        <Loading />
+      ) : (
+        <>
+          <ProfileContainer>
+            <ProfileBox>
+              <ProfileImage src={friendObj.photoURL} alt="profile" />
+              <ProfileLi>{friendObj.displayName}</ProfileLi>
+              <ProfileLi>{friendObj.email}</ProfileLi>
+              <FriendReq>친구요청</FriendReq>
+            </ProfileBox>
+          </ProfileContainer>
+        </>
+      )}
+    </>
   );
 }
 

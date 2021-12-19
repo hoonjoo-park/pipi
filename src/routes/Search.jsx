@@ -38,7 +38,6 @@ function Search() {
             onChange={handleChange}
             value={searchText}
             placeholder="검색하고자 하는 상대방 이메일을 입력해주세요"
-            autoComplete="off"
           />
           <SearchBtn type="submit" value="검색" />
         </FormBox>
