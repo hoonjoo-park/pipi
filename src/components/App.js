@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import AppRouter from './Router';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import Loading from './Loading';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 function App() {
   const [userObject, setUserObject] = useState(null);
+  const [userCollection, setUserCollection] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const getUser = async () => {
+    const docRef = collection(db, 'Users');
+    const q = query(docRef, where('uid', '==', auth.currentUser.uid));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setUserCollection(doc.data());
+    });
+  };
   useEffect(() => {
+    getUser();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (user.displayName) {
@@ -19,6 +30,8 @@ function App() {
             createdAt: user.metadata.creationTime,
             provider: user.providerData[0].providerId,
             emailVerified: user.emailVerified,
+            friends: userCollection.friends,
+            pendingFriends: userCollection.pendingFriends,
           });
         } else {
           setUserObject({
@@ -29,6 +42,8 @@ function App() {
             createdAt: user.metadata.creationTime,
             provider: user.providerData[0].providerId,
             emailVerified: user.emailVerified,
+            friends: userCollection.friends,
+            pendingFriends: userCollection.pendingFriends,
           });
         }
       } else {

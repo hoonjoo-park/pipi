@@ -1,8 +1,8 @@
-import { addDoc, doc } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import { addDoc, collection, doc } from 'firebase/firestore';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { db } from '../firebase';
-function FriendHome() {
+function FriendHome({ userObject }) {
   const [pipiText, setPipiText] = useState('');
   const handlePipiChange = (e) => {
     const {
@@ -19,12 +19,6 @@ function FriendHome() {
     });
     setPipiText('');
   };
-  useEffect(() => {
-    const getUser = async () => {
-      const docRef = doc(db, 'Users', searchText);
-      const result = await getDoc(docRef);
-    };
-  }, []);
   return (
     <div>
       <FormContainer onSubmit={handlePipiSubmit}>

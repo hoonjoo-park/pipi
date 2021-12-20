@@ -17,4 +17,5 @@ const FooterContainer = styled.div`
   height: 15vh;
   font-size: 1.2rem;
   font-weight: 500;
+  border-top: 2px solid #eaeaea;
 `;

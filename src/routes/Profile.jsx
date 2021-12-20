@@ -1,38 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { db } from '../firebase';
 import Loading from '../components/Loading';
+import FriendHome from './FriendHome';
 
-function Profile() {
+function Profile({ userObject }) {
+  const [isLoading, setIsLoading] = useState(true);
   const [friendObj, setFriendObj] = useState({});
+  const [isFriend, setIsFriend] = useState(false);
   const { id } = useParams();
   const getUser = async () => {
     const docRef = collection(db, 'Users');
     const q = query(docRef, where('uid', '==', id));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
+      checkFriend(doc.data());
       setFriendObj(doc.data());
     });
+    setIsLoading(false);
+  };
+  const checkFriend = async (user) => {
+    if (user.friends.length > 0) {
+      if (user.friends.includes(userObject.uid)) {
+        setIsFriend(true);
+      }
+    }
+  };
+  const updatePending = () => {
+    const toUpdate = doc(db, 'Users', `${userObject.email}`);
+    updateDoc(toUpdate, {
+      pendingFriends: [friendObj.uid],
+    });
+  };
+  const createRequest = async () => {
+    const docRef = doc(db, 'Requests', friendObj.uid);
+    const result = await getDoc(docRef);
+    if (result.data()) {
+      const req = result.data();
+      if (!req.requests.find((el) => el.uid === userObject.uid)) {
+        const toPush = req.requests;
+        toPush.push({ email: userObject.email, uid: userObject.uid });
+        await updateDoc(docRef, {
+          requests: toPush,
+        });
+      }
+    } else {
+      await setDoc(doc(db, 'Requests', friendObj.uid), {
+        requests: [{ email: userObject.email, uid: userObject.uid }],
+      });
+    }
+  };
+  const handleRequest = (e) => {
+    e.preventDefault();
+    createRequest();
+    if (userObject.pendingFriends) {
+      if (!userObject.pendingFriends.includes(friendObj.uid)) {
+        updatePending();
+      } else {
+        window.alert('이미 전송된 요청입니다.');
+      }
+    } else {
+      updatePending();
+    }
   };
   useEffect(() => {
     getUser();
   }, []);
   return (
     <>
-      {!friendObj ? (
-        <Loading />
+      {isLoading ? (
+        <ProfileContainer>
+          <Loading />
+        </ProfileContainer>
       ) : (
         <>
-          <ProfileContainer>
-            <ProfileBox>
-              <ProfileImage src={friendObj.photoURL} alt="profile" />
-              <ProfileLi>{friendObj.displayName}</ProfileLi>
-              <ProfileLi>{friendObj.email}</ProfileLi>
-              <FriendReq>친구요청</FriendReq>
-            </ProfileBox>
-          </ProfileContainer>
+          {isFriend ? (
+            <FriendHome userObject={userObject} />
+          ) : (
+            <>
+              <ProfileContainer>
+                <ProfileBox>
+                  <ProfileImage src={friendObj.photoURL} alt="profile" />
+                  <ProfileLi>{friendObj.displayName}</ProfileLi>
+                  <ProfileLi>{friendObj.email}</ProfileLi>
+                  <FriendReq onClick={handleRequest}>친구요청</FriendReq>
+                </ProfileBox>
+              </ProfileContainer>
+            </>
+          )}
         </>
       )}
     </>
@@ -79,4 +145,9 @@ const FriendReq = styled.button`
   border-radius: 15px;
   border: 1px solid #1fab89;
   color: #1fab89;
+  transition: all 0.2s;
+  &:hover {
+    background-color: #1fab89;
+    color: #ffffff;
+  }
 `;

@@ -34,7 +34,11 @@ function AppRouter({ refreshUser, userObject }) {
                 exact
                 element={<MyProfile userObject={userObject} />}
               />
-              <Route path={'/profile/:id'} exact element={<Profile />} />
+              <Route
+                path={'/profile/:id'}
+                exact
+                element={<Profile userObject={userObject} />}
+              />
               <Route
                 path={'/editProfile/:id'}
                 exact

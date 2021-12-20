@@ -56,6 +56,8 @@ function Auth({ refreshUser }) {
             displayName: auth.currentUser.displayName,
             email: auth.currentUser.email,
             photoURL: auth.currentUser.photoURL,
+            friends: [],
+            pendingFriends: [],
           });
           setEmail('');
           setPassword('');
