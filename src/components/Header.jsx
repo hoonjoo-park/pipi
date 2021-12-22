@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { PhoneLogo } from '../Image';
 
-function Header({ userObject }) {
+function Header({ userObject, requests }) {
   return (
     <Nav>
       <Logo to="/">
@@ -15,7 +15,16 @@ function Header({ userObject }) {
           <Link to="/">Home</Link>
           <Link to="/search">검색</Link>
           <ProfileLink to={`/myProfile`}>
-            {userObject ? `${userObject.displayName}` : '프로필'}
+            {userObject ? (
+              <span>
+                {userObject.displayName}
+                <Alert exist={Boolean(requests.length > 0)}>
+                  {requests && requests.length}
+                </Alert>
+              </span>
+            ) : (
+              '프로필'
+            )}
           </ProfileLink>
         </MenuBox>
       )}
@@ -32,7 +41,25 @@ const Nav = styled.nav`
   height: 10vh;
   box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
 `;
-const ProfileLink = styled(Link)``;
+const ProfileLink = styled(Link)`
+  & > span {
+    position: relative;
+  }
+`;
+const Alert = styled.span`
+  position: absolute;
+  display: ${(props) => (props.exist ? 'flex' : 'none')};
+  top: -10px;
+  right: -15px;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 100%;
+  color: #ffffff;
+  background-color: #d64f78;
+`;
 const Logo = styled(Link)`
   display: flex;
   align-items: center;

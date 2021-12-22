@@ -3,48 +3,38 @@ import AppRouter from './Router';
 import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import Loading from './Loading';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 function App() {
   const [userObject, setUserObject] = useState(null);
-  const [userCollection, setUserCollection] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const getUser = async () => {
-    const docRef = collection(db, 'Users');
-    const q = query(docRef, where('uid', '==', auth.currentUser.uid));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setUserCollection(doc.data());
-    });
+  const userSnapshot = (noName) => {
+    const userRef = doc(db, 'Users', auth.currentUser.email);
+    if (noName) {
+      onSnapshot(userRef, async (snapshot) => {
+        const updated = snapshot.data();
+        const newUserObject = {
+          displayName: 'User',
+          ...updated,
+          ...userObject,
+        };
+        setUserObject(newUserObject);
+      });
+    } else {
+      onSnapshot(userRef, async (snapshot) => {
+        const updated = snapshot.data();
+        const newUserObject = { ...updated, ...userObject };
+        setUserObject(newUserObject);
+      });
+    }
   };
   useEffect(() => {
-    getUser();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (user.displayName) {
-          setUserObject({
-            displayName: user.displayName,
-            uid: user.uid,
-            email: user.email,
-            photoURL: user.photoURL,
-            createdAt: user.metadata.creationTime,
-            provider: user.providerData[0].providerId,
-            emailVerified: user.emailVerified,
-            friends: userCollection.friends,
-            pendingFriends: userCollection.pendingFriends,
-          });
+          userSnapshot();
         } else {
-          setUserObject({
-            displayName: 'User',
-            uid: user.uid,
-            email: user.email,
-            photoURL: user.photoURL,
-            createdAt: user.metadata.creationTime,
-            provider: user.providerData[0].providerId,
-            emailVerified: user.emailVerified,
-            friends: userCollection.friends,
-            pendingFriends: userCollection.pendingFriends,
-          });
+          userSnapshot(true);
         }
       } else {
         setUserObject(null);
@@ -59,14 +49,12 @@ function App() {
       uid: user.uid,
       email: user.email,
       photoURL: user.photoURL,
-      meta: user.metadata.creationTime,
-      provider: user.providerData[0].providerId,
-      emailVerified: user.emailVerified,
+      ...userObject,
     });
   };
   return (
     <>
-      {isLoading ? (
+      {isLoading || !userObject ? (
         <Loading />
       ) : (
         <>

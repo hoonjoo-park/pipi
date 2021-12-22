@@ -35,5 +35,5 @@ const LoadingContainer = styled.div`
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: ${rotating} 1.5s 0s infinite cubic-bezier(0.29, -0.13, 0.1, 1.04);
+  animation: ${rotating} 1.1s 0s infinite cubic-bezier(0.29, -0.13, 0.1, 1.04);
 `;

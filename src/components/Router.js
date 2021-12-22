@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   HashRouter as Router,
   Routes,
@@ -13,11 +13,29 @@ import Profile from '../routes/Profile';
 import EditProfile from '../routes/EditProfile';
 import Search from '../routes/Search';
 import MyProfile from '../routes/MyProfile';
+import { db } from '../firebase';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 function AppRouter({ refreshUser, userObject }) {
+  const [requests, setRequests] = useState([]);
+  const getRequests = () => {
+    if (!userObject) {
+      return;
+    }
+    const reqRef = doc(db, 'Requests', userObject.uid);
+    onSnapshot(reqRef, (snapshot) => {
+      const reqs = snapshot.data();
+      if (reqs) {
+        setRequests(reqs.requests);
+      }
+    });
+  };
+  useEffect(() => {
+    getRequests();
+  }, []);
   return (
     <Router>
-      <Header userObject={userObject} />
+      <Header userObject={userObject} requests={requests} />
       <Routes>
         <>
           {userObject ? (
@@ -32,7 +50,9 @@ function AppRouter({ refreshUser, userObject }) {
               <Route
                 path={'/myProfile'}
                 exact
-                element={<MyProfile userObject={userObject} />}
+                element={
+                  <MyProfile userObject={userObject} requests={requests} />
+                }
               />
               <Route
                 path={'/profile/:id'}

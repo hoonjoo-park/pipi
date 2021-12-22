@@ -42,6 +42,7 @@ function Profile({ userObject }) {
     updateDoc(toUpdate, {
       pendingFriends: [friendObj.uid],
     });
+    window.alert('요청이 성공적으로 전송되었습니다 😎');
   };
   const createRequest = async () => {
     const docRef = doc(db, 'Requests', friendObj.uid);
@@ -64,11 +65,12 @@ function Profile({ userObject }) {
   const handleRequest = (e) => {
     e.preventDefault();
     createRequest();
+    console.log(userObject);
     if (userObject.pendingFriends) {
       if (!userObject.pendingFriends.includes(friendObj.uid)) {
         updatePending();
       } else {
-        window.alert('이미 전송된 요청입니다.');
+        window.alert('이미 전송된 요청입니다 😓');
       }
     } else {
       updatePending();

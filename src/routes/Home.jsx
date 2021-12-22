@@ -2,7 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { sendEmailVerification } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import styled from 'styled-components';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
 import Pipi from '../components/Pipi';
 
 function Home({ userObject }) {
@@ -12,18 +20,45 @@ function Home({ userObject }) {
     setIsSent(true);
     sendEmailVerification(auth.currentUser);
   };
-  useEffect(() => {
+  const pipiSnapshot = () => {
     const querySet = query(
       collection(db, 'Pipi'),
       orderBy('createdAt', 'desc')
     );
     onSnapshot(querySet, async (snapshot) => {
-      const newPipiArray = await snapshot.docs.map((doc) => ({
+      const newPipiArray = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setPipiArray(newPipiArray);
     });
+  };
+  const checkRequests = async () => {
+    if (!userObject.pendingFriends) {
+      return;
+    }
+    const acceptedRef = doc(db, 'Accepted', userObject.uid);
+    const result = await getDoc(acceptedRef);
+    let accepts = result.data().accepts;
+    let newPendingFriends = userObject.pendingFriends.filter(
+      (el) => !accepts.includes(el)
+    );
+    let newFriends = [
+      ...userObject.friends,
+      ...userObject.pendingFriends.filter((el) => accepts.includes(el)),
+    ];
+    const toAdd = doc(db, 'Users', userObject.email);
+    await updateDoc(toAdd, {
+      friends: newFriends,
+      pendingFriends: newPendingFriends,
+    });
+    await updateDoc(acceptedRef, {
+      accepts: [],
+    });
+  };
+  useEffect(() => {
+    checkRequests();
+    pipiSnapshot();
   }, []);
   return (
     <HomeContainer>
