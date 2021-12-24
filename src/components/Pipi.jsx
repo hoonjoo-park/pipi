@@ -54,48 +54,63 @@ function Pipi({ pipi, userObject }) {
     )}  ${hour.padStart(2, ' 0')}:${minute.padStart(2, '0')}`;
   };
   return (
-    <PipiItem id={pipi.id}>
-      <ProfileBox to={`/profile/${owner.uid}`}>
-        <PipiProfile src={owner.photoURL} alt="profile" />
-        <span>{owner.displayName}</span>
-      </ProfileBox>
-      {isEdit ? (
-        <>
-          <EditForm onSubmit={handleUpdate}>
-            <TextBox>
-              <EditInput type="text" value={newPipi} onChange={handleChange} />
-            </TextBox>
-            <EditSubmit type="submit" value="수정" />
-          </EditForm>
-          <EditCancelBtn onClick={toggleUpdate}>
-            <MdOutlineCancel />
-          </EditCancelBtn>
-        </>
-      ) : (
-        <>
-          <PipiTime>{convertDate(new Date(pipi.createdAt))}</PipiTime>
-          <TextBox>
-            <span>{pipi.text}</span>
-          </TextBox>
-        </>
-      )}
-      {userObject.uid === owner.uid && !isEdit && (
-        <EditBox id="editBox">
-          <span onClick={toggleUpdate}>
-            <AiFillEdit />
-          </span>
-          <span onClick={handleDelete}>
-            <AiFillDelete />
-          </span>
-        </EditBox>
-      )}
-    </PipiItem>
+    <>
+      {
+        <PipiItem id={pipi.id}>
+          <Cover>
+            <CoverBtnBox>
+              <div>확인</div>
+              <div>대화</div>
+            </CoverBtnBox>
+          </Cover>
+          <ProfileBox to={`/profile/${owner.uid}`}>
+            <PipiProfile src={owner.photoURL} alt="profile" />
+            <span>{owner.displayName}</span>
+          </ProfileBox>
+          {isEdit ? (
+            <>
+              <EditForm onSubmit={handleUpdate}>
+                <TextBox>
+                  <EditInput
+                    type="text"
+                    value={newPipi}
+                    onChange={handleChange}
+                  />
+                </TextBox>
+                <EditSubmit type="submit" value="수정" />
+              </EditForm>
+              <EditCancelBtn onClick={toggleUpdate}>
+                <MdOutlineCancel />
+              </EditCancelBtn>
+            </>
+          ) : (
+            <>
+              <PipiTime>{convertDate(new Date(pipi.createdAt))}</PipiTime>
+              <TextBox>
+                <span>{pipi.text}</span>
+              </TextBox>
+            </>
+          )}
+          {userObject.uid === owner.uid && !isEdit && (
+            <EditBox id="editBox">
+              <span onClick={toggleUpdate}>
+                <AiFillEdit />
+              </span>
+              <span onClick={handleDelete}>
+                <AiFillDelete />
+              </span>
+            </EditBox>
+          )}
+        </PipiItem>
+      }
+    </>
   );
 }
 
 export default Pipi;
 
 const PipiItem = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -128,8 +143,10 @@ const PipiProfile = styled.img`
 `;
 const PipiTime = styled.span`
   position: absolute;
+  width: 80%;
   bottom: 5%;
   left: 50%;
+  text-align: center;
   transform: translateX(-50%);
   color: #9b9a9a;
 `;
@@ -195,3 +212,33 @@ const EditBox = styled.div`
     color: #d64f78;
   }
 `;
+const Cover = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #eaeaea;
+  border-radius: 15px;
+`;
+const CoverBtnBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 80%;
+  & > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 2rem;
+    border-radius: 10px;
+    background-color: dodgerblue;
+    color: #ffffff;
+  }
+`;
+const CoverCheck = styled.div``;
+const CoverChat = styled.div``;

@@ -65,7 +65,6 @@ function Profile({ userObject }) {
   const handleRequest = (e) => {
     e.preventDefault();
     createRequest();
-    console.log(userObject);
     if (userObject.pendingFriends) {
       if (!userObject.pendingFriends.includes(friendObj.uid)) {
         updatePending();
@@ -88,7 +87,7 @@ function Profile({ userObject }) {
       ) : (
         <>
           {isFriend ? (
-            <FriendHome userObject={userObject} />
+            <FriendHome userObject={userObject} friendObj={friendObj} />
           ) : (
             <>
               <ProfileContainer>

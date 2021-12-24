@@ -10,6 +10,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 import Pipi from '../components/Pipi';
 
@@ -23,7 +24,7 @@ function Home({ userObject }) {
   const pipiSnapshot = () => {
     const querySet = query(
       collection(db, 'Pipi'),
-      orderBy('createdAt', 'desc')
+      where('to', 'array-contains', userObject.uid)
     );
     onSnapshot(querySet, async (snapshot) => {
       const newPipiArray = snapshot.docs.map((doc) => ({
@@ -39,22 +40,25 @@ function Home({ userObject }) {
     }
     const acceptedRef = doc(db, 'Accepted', userObject.uid);
     const result = await getDoc(acceptedRef);
-    let accepts = result.data().accepts;
-    let newPendingFriends = userObject.pendingFriends.filter(
-      (el) => !accepts.includes(el)
-    );
-    let newFriends = [
-      ...userObject.friends,
-      ...userObject.pendingFriends.filter((el) => accepts.includes(el)),
-    ];
-    const toAdd = doc(db, 'Users', userObject.email);
-    await updateDoc(toAdd, {
-      friends: newFriends,
-      pendingFriends: newPendingFriends,
-    });
-    await updateDoc(acceptedRef, {
-      accepts: [],
-    });
+    if (result.exists()) {
+      let accepts = result.data().accepts;
+      let newPendingFriends = userObject.pendingFriends.filter(
+        (el) => !accepts.includes(el)
+      );
+      let newFriends = [
+        ...userObject.friends,
+        ...userObject.pendingFriends.filter((el) => accepts.includes(el)),
+      ];
+      const toAdd = doc(db, 'Users', userObject.email);
+      await updateDoc(toAdd, {
+        friends: newFriends,
+        pendingFriends: newPendingFriends,
+      });
+      await updateDoc(acceptedRef, {
+        accepts: [],
+      });
+    } else {
+    }
   };
   useEffect(() => {
     checkRequests();

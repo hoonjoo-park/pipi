@@ -54,7 +54,7 @@ function App() {
   };
   return (
     <>
-      {isLoading || !userObject ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <>
