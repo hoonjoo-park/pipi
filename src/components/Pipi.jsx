@@ -18,7 +18,7 @@ function Pipi({ pipi, userObject }) {
   };
   const handleDelete = async (e) => {
     e.preventDefault();
-    const ok = window.confirm('삭제하시겠습니까?');
+    const ok = window.confirm('해당 삐삐가 삭제처리 됩니다. 삭제하시겠습니까?');
     if (ok) {
       const toDelete = doc(db, 'Pipi', `${pipi.id}`);
       await deleteDoc(toDelete);
@@ -57,12 +57,16 @@ function Pipi({ pipi, userObject }) {
     <>
       {
         <PipiItem id={pipi.id}>
-          <Cover>
-            <CoverBtnBox>
-              <div>확인</div>
-              <div>대화</div>
-            </CoverBtnBox>
-          </Cover>
+          {userObject.uid !== owner.uid && !isEdit && (
+            <Cover>
+              <CoverBtnBox>
+                <CoverCheck onClick={handleDelete}>확인</CoverCheck>
+                <CoverChat to={`/chat/${Math.random().toString(36).slice(2)}`}>
+                  대화
+                </CoverChat>
+              </CoverBtnBox>
+            </Cover>
+          )}
           <ProfileBox to={`/profile/${owner.uid}`}>
             <PipiProfile src={owner.photoURL} alt="profile" />
             <span>{owner.displayName}</span>
@@ -125,6 +129,9 @@ const PipiItem = styled.div`
   &:hover #editBox {
     opacity: 1;
   }
+  &:hover > div:nth-child(1) {
+    display: flex;
+  }
 `;
 
 const ProfileBox = styled(Link)`
@@ -154,7 +161,6 @@ const TextBox = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  /* align-items: flex-start; */
   & > span {
     width: 100%;
     margin-top: 3rem;
@@ -214,7 +220,7 @@ const EditBox = styled.div`
 `;
 const Cover = styled.div`
   position: absolute;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   top: 0;
@@ -229,16 +235,21 @@ const CoverBtnBox = styled.div`
   align-items: center;
   justify-content: space-evenly;
   width: 80%;
-  & > div {
+  & > div,
+  a {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 4rem;
-    height: 2rem;
+    width: 4.5rem;
+    height: 2.5rem;
     border-radius: 10px;
-    background-color: dodgerblue;
     color: #ffffff;
+    cursor: pointer;
   }
 `;
-const CoverCheck = styled.div``;
-const CoverChat = styled.div``;
+const CoverCheck = styled.div`
+  background-color: #6768ab;
+`;
+const CoverChat = styled(Link)`
+  background-color: #1fab89;
+`;

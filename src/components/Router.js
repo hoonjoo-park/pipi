@@ -15,6 +15,7 @@ import Search from '../routes/Search';
 import MyProfile from '../routes/MyProfile';
 import { db } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
+import Chat from '../routes/Chat';
 
 function AppRouter({ refreshUser, userObject }) {
   const [requests, setRequests] = useState([]);
@@ -70,6 +71,7 @@ function AppRouter({ refreshUser, userObject }) {
                 }
               />
               <Route path={'/search'} exact element={<Search />} />
+              <Route path={'/chat/:id'} exact element={<Chat />} />
             </>
           ) : (
             <Route
