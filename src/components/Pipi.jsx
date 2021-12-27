@@ -61,9 +61,7 @@ function Pipi({ pipi, userObject }) {
             <Cover>
               <CoverBtnBox>
                 <CoverCheck onClick={handleDelete}>확인</CoverCheck>
-                <CoverChat to={`/chat/${Math.random().toString(36).slice(2)}`}>
-                  대화
-                </CoverChat>
+                <CoverChat to={`/chat/${owner.uid}`}>대화</CoverChat>
               </CoverBtnBox>
             </Cover>
           )}
@@ -130,7 +128,7 @@ const PipiItem = styled.div`
     opacity: 1;
   }
   &:hover > div:nth-child(1) {
-    display: flex;
+    opacity: 1;
   }
 `;
 
@@ -220,7 +218,8 @@ const EditBox = styled.div`
 `;
 const Cover = styled.div`
   position: absolute;
-  display: none;
+  opacity: 0;
+  display: flex;
   align-items: center;
   justify-content: center;
   top: 0;
@@ -229,6 +228,7 @@ const Cover = styled.div`
   height: 100%;
   background-color: #eaeaea;
   border-radius: 15px;
+  transition: 0.2s ease-in-out;
 `;
 const CoverBtnBox = styled.div`
   display: flex;

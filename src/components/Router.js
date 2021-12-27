@@ -71,7 +71,11 @@ function AppRouter({ refreshUser, userObject }) {
                 }
               />
               <Route path={'/search'} exact element={<Search />} />
-              <Route path={'/chat/:id'} exact element={<Chat />} />
+              <Route
+                path={'/chat/:id'}
+                exact
+                element={<Chat userObject={userObject} />}
+              />
             </>
           ) : (
             <Route

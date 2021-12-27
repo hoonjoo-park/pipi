@@ -3,7 +3,6 @@ import {
   collection,
   doc,
   onSnapshot,
-  orderBy,
   query,
   where,
 } from 'firebase/firestore';
