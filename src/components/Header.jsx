@@ -12,8 +12,9 @@ function Header({ userObject, requests }) {
       </Logo>
       {userObject && (
         <MenuBox>
-          <Link to="/">Home</Link>
           <Link to="/search">검색</Link>
+          <Link to="/chat">채팅</Link>
+          <Link to="/friends">친구</Link>
           <ProfileLink to={`/myProfile`}>
             {userObject ? (
               <span>
@@ -79,9 +80,9 @@ const Logo = styled(Link)`
 `;
 const MenuBox = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
-  width: 30%;
+  width: 20%;
   height: 100%;
   gap: 1rem;
   margin-left: auto;
@@ -89,7 +90,7 @@ const MenuBox = styled.div`
   & > * {
     text-align: center;
     padding: 1em;
-    width: 18%;
+    width: max-content;
     font-weight: 700;
     font-size: 1.1rem;
   }

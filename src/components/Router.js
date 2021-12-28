@@ -16,6 +16,8 @@ import MyProfile from '../routes/MyProfile';
 import { db } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import Chat from '../routes/Chat';
+import ChatList from './ChatList';
+import FriendList from '../routes/FriendList';
 
 function AppRouter({ refreshUser, userObject }) {
   const [requests, setRequests] = useState([]);
@@ -72,9 +74,19 @@ function AppRouter({ refreshUser, userObject }) {
               />
               <Route path={'/search'} exact element={<Search />} />
               <Route
+                path={'/chat'}
+                exact
+                element={<ChatList userObject={userObject} />}
+              />
+              <Route
                 path={'/chat/:id'}
                 exact
                 element={<Chat userObject={userObject} />}
+              />
+              <Route
+                path={'/friends'}
+                exact
+                element={<FriendList userObject={userObject} />}
               />
             </>
           ) : (

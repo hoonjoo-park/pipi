@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   onSnapshot,
@@ -9,15 +10,20 @@ import {
   where,
 } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../firebase';
+import { IoIosSend } from 'react-icons/io';
+import { AiFillDelete } from 'react-icons/ai';
+import { RiDeleteBackFill } from 'react-icons/ri';
 
 function Chat({ userObject }) {
-  const params = useParams();
   const [chatText, setChatText] = useState('');
   const [chat, setChat] = useState([]);
   const [chatRoomId, setChatRoomId] = useState('');
+  const [chatRooms, setChatRooms] = useState([]);
+  const navigate = useNavigate();
+  const params = useParams();
   const getChatroom = async () => {
     const chatRef = collection(db, 'Chats');
     const q = query(
@@ -36,7 +42,7 @@ function Chat({ userObject }) {
           id: doc.id,
           ...doc.data(),
         }));
-        console.log(chats);
+        setChatRooms(chats);
         setChatRoomId(chats[0].id);
         setChat(chats[0].chats);
       });
@@ -56,11 +62,35 @@ function Chat({ userObject }) {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (chatText === '') {
+      return;
+    }
     const chatRoomRef = doc(db, 'Chats', chatRoomId);
     await updateDoc(chatRoomRef, {
-      chats: [...chat, { from: userObject.uid, text: chatText }],
+      chats: [
+        ...chat,
+        { from: userObject.uid, text: chatText, createdAt: Date.now() },
+      ],
     });
     setChatText('');
+  };
+  const convertDate = (date) => {
+    let month = (date.getMonth() + 1).toString();
+    let day = date.getDate().toString();
+    let hour = date.getHours().toString();
+    let minute = date.getMinutes().toString();
+    return `${month.padStart(2, '0')}월 ${day.padStart(
+      2,
+      '0'
+    )}일 ${hour.padStart(2, ' 0')}:${minute.padStart(2, '0')}`;
+  };
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    const ok = window.confirm('채팅방을 삭제하시겠습니까?');
+    if (ok) {
+      await deleteDoc(chatRoomId);
+    }
+    navigate('/');
   };
   useEffect(() => {
     getChatroom();
@@ -69,6 +99,10 @@ function Chat({ userObject }) {
   return (
     <ChatContainer>
       <ChatBox>
+        <ChatBtnBox>
+          <RiDeleteBackFill />
+          <AiFillDelete style={{ color: '#B83B5E' }} onClick={handleDelete} />
+        </ChatBtnBox>
         <ChatUl>
           {chat &&
             chat.map((el, i) => (
@@ -77,6 +111,9 @@ function Chat({ userObject }) {
                 className={el.from === userObject.uid ? 'my' : 'other'}
               >
                 <span>{el.text}</span>
+                <span className="chatTime">
+                  {convertDate(new Date(el.createdAt))}
+                </span>
               </li>
             ))}
         </ChatUl>
@@ -88,7 +125,9 @@ function Chat({ userObject }) {
             onKeyUp={handleType}
             placeholder="메시지를 입력하세요"
           />
-          <ChatSubmit type="submit" value="전송" />
+          <ChatSubmit type="submit">
+            <IoIosSend />
+          </ChatSubmit>
         </ChatForm>
       </ChatBox>
     </ChatContainer>
@@ -107,7 +146,7 @@ const ChatContainer = styled.div`
 const ChatBox = styled.div`
   position: relative;
   border-radius: 15px;
-  padding: 2em;
+  padding: 3em 2em;
   height: 85%;
   width: 35%;
   background-color: #6768ab;
@@ -116,19 +155,28 @@ const ChatUl = styled.ul`
   height: 90%;
   overflow: scroll;
   & > li {
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
     height: 10%;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     & > span {
       display: flex;
       align-items: center;
       justify-content: center;
       background-color: #ffffff;
+      max-width: 45%;
       padding: 1em;
       height: 80%;
       border-radius: 5px;
+    }
+    & > span.chatTime {
+      position: absolute;
+      bottom: -35%;
+      padding: 0 0.5em;
+      height: fit-content;
+      background-color: transparent;
     }
   }
   & > li.my {
@@ -152,14 +200,27 @@ const ChatInput = styled.input`
   width: 100%;
   height: 90%;
 `;
-const ChatSubmit = styled.input`
+const ChatSubmit = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 15%;
-  height: 90%;
+  width: 10%;
+  height: 85%;
   color: #ffffff;
   border-radius: 25px;
   background-color: #1fab89;
-  margin-right: 0.5%;
+  margin-right: 0.8%;
+`;
+const ChatBtnBox = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  top: 2.5%;
+  right: 5%;
+  width: 8%;
+  & > svg {
+    cursor: pointer;
+    color: #444444;
+  }
 `;
