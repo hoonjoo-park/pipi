@@ -21,19 +21,16 @@ function Chat({ userObject }) {
   const [chatText, setChatText] = useState('');
   const [chat, setChat] = useState([]);
   const [chatRoomId, setChatRoomId] = useState('');
-  const [chatRooms, setChatRooms] = useState([]);
   const navigate = useNavigate();
   const params = useParams();
   const getChatroom = async () => {
     const chatRef = collection(db, 'Chats');
     const q = query(
       chatRef,
-      where('people', 'in', [
-        userObject.uid + params.id,
-        params.id + userObject.uid,
-      ])
+      where('people', 'array-contains-any', [userObject.uid, params.id])
     );
     const result = await getDocs(q);
+    console.log(result);
     if (result.empty) {
       setChatroom();
     } else {
@@ -42,7 +39,6 @@ function Chat({ userObject }) {
           id: doc.id,
           ...doc.data(),
         }));
-        setChatRooms(chats);
         setChatRoomId(chats[0].id);
         setChat(chats[0].chats);
       });
@@ -50,7 +46,7 @@ function Chat({ userObject }) {
   };
   const setChatroom = async () => {
     await addDoc(collection(db, 'Chats'), {
-      people: userObject.uid + params.id,
+      people: [userObject.uid, params.id],
       chats: [],
     });
   };
