@@ -139,6 +139,9 @@ const ProfileBox = styled(Link)`
   justify-content: center;
   margin-top: 1rem;
   width: 100%;
+  & > span {
+    font-size: 1.2rem;
+  }
 `;
 const PipiProfile = styled.img`
   height: 5rem;
@@ -161,6 +164,7 @@ const TextBox = styled.div`
   display: flex;
   & > span {
     width: 100%;
+    font-size: 1.1rem;
     margin-top: 3rem;
     text-align: center;
   }

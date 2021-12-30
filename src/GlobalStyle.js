@@ -11,18 +11,30 @@ const GlobalStyle = createGlobalStyle`
         line-height: 1.15;
         -webkit-text-size-adjust: 100%;
         @media screen and (max-width : 1400px){
-        font-size : 14px;
+        font-size : 16px;
     }
         @media screen and (max-width : 1200px){
-        font-size : 13px;
+        font-size : 14px;
+    }
+        @font-face {
+        font-family: 'BMEuljiro10yearslater';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/BMEuljiro10yearslater.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+        @font-face {
+        font-family: 'LAB디지털';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/LAB디지털.woff') format('woff');
+        font-weight: bold;
+        font-style: normal;
     }
     }
 
     body {
     margin: 0;
-    font-family: 'Noto Sans KR', sans-serif;
     background-color:#F7F7F7;
     color: #343434;
+    font-family: 'LAB디지털';
     }
 
     main {

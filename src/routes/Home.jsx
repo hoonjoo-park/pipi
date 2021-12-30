@@ -118,7 +118,7 @@ const ProfileBox = styled.div`
     margin-bottom: 1rem;
   }
   & > h3 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;

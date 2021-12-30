@@ -1,14 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { PhoneLogo } from '../Image';
+import { MainLogo } from '../Image';
 
 function Header({ userObject, requests }) {
   return (
     <Nav>
       <Logo to="/">
-        <img src={PhoneLogo} alt="logo" />
-        삐삐
+        <img src={MainLogo} alt="logo" />
       </Logo>
       {userObject && (
         <MenuBox>
@@ -68,14 +67,9 @@ const Logo = styled(Link)`
   font-weight: 700;
   margin-left: 15vw;
   padding: 1em;
-  &:hover > img {
-    transform: scale(1.1);
-  }
   & > img {
-    width: 1.7rem;
+    width: 6rem;
     margin-right: 1.2rem;
-    transform: translateY(-12%) rotate(18deg);
-    transition: all 0.2s ease-in-out;
   }
 `;
 const MenuBox = styled.div`
@@ -92,6 +86,6 @@ const MenuBox = styled.div`
     padding: 1em;
     width: max-content;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 `;

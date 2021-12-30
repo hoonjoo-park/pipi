@@ -104,20 +104,20 @@ const FormBox = styled.form`
 `;
 const SearchInput = styled.input`
   display: block;
-  width: 50%;
-  height: 3rem;
+  width: 70%;
+  height: 4rem;
   padding: 0.5em;
   margin-right: 2rem;
-  font-size: 1.2rem;
+  font-size: 1.7rem;
   border-bottom: 2px solid #6768ab;
 `;
 const SearchBtn = styled.input`
-  width: 5rem;
-  height: 3rem;
-  padding: 1em;
+  width: 5.5rem;
+  height: 3.5rem;
   border-radius: 15px;
+  font-size: 1.2rem;
   font-weight: 700;
-  background-color: #85a0a8;
+  background-color: #6768ab;
   color: #ffffff;
   cursor: pointer;
 `;
@@ -163,6 +163,6 @@ const ResultLi = styled.li`
 const NothingFound = styled.h3`
   display: flex;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
 `;

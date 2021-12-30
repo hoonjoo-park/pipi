@@ -36,6 +36,7 @@ const Li = styled.li`
   height: 3.5rem;
   background-color: #ffffff;
   border-radius: 5px;
+  box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
   & > img {
     height: 70%;
     border-radius: 50%;

@@ -145,7 +145,8 @@ const ChatBox = styled.div`
   padding: 3em 2em;
   height: 85%;
   width: 35%;
-  background-color: #6768ab;
+  background-color: #ffffff;
+  box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
 `;
 const ChatUl = styled.ul`
   height: 90%;
@@ -161,7 +162,7 @@ const ChatUl = styled.ul`
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #ffffff;
+      background-color: #eaeaea;
       max-width: 45%;
       padding: 1em;
       height: 80%;
@@ -188,6 +189,7 @@ const ChatForm = styled.form`
   padding-left: 2em;
   bottom: 3%;
   left: 50%;
+  border: 1.5px solid #6768ab;
   border-radius: 25px;
   background-color: #ffffff;
   transform: translateX(-50%);

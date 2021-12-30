@@ -28,16 +28,16 @@ const FriendListContainer = styled.div`
 `;
 const FriendUl = styled.ul`
   /* min-width: 30vw; */
-  width: 20rem;
+  width: 30rem;
   height: 70vh;
-  padding: 1em;
+  padding: 3em;
   border-radius: 15px;
-  background-color: #eaeaea;
+  background-color: #ffffff;
   box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
   & > h3 {
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 1.7rem;
     text-align: center;
-    margin: 1rem 0;
+    margin: 1rem 0 2rem 0;
   }
 `;

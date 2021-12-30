@@ -106,8 +106,10 @@ const ProfileBox = styled.ul`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 500px;
+  max-height: 500px;
   width: 30vw;
-  height: 85%;
+  height: 80%;
   padding: 2.5em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
   border-radius: 15px;
@@ -119,9 +121,9 @@ const ProfileImage = styled.img`
   margin-bottom: 3em;
 `;
 const ProfileLi = styled.li`
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 `;
 const Logout = styled.button`
   width: 50%;
@@ -165,10 +167,10 @@ const AlertBox = styled.ul`
   padding: 2em 1.5em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
   border-radius: 15px;
-  margin-top: 15.5%;
+  margin-top: 25.5%;
   margin-left: 10%;
   & > h3 {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     font-weight: 600;
     text-align: center;
     margin-bottom: 1.5rem;
@@ -192,7 +194,7 @@ const AlertBox = styled.ul`
 `;
 const NoAlert = styled.h4`
   margin-top: 20%;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 500;
   text-align: center;
   color: #6768ab;

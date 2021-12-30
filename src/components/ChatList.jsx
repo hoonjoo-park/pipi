@@ -61,7 +61,8 @@ const ListBox = styled.div`
   min-height: 70vh;
   width: 30%;
   margin-right: 1rem;
-  background-color: #1a374d;
+  background-color: #ffffff;
+  box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
 `;
 const ListUl = styled.ul`
   width: 100%;
@@ -71,8 +72,11 @@ const ListUl = styled.ul`
     align-items: center;
     padding: 0 1em;
     height: 4rem;
-    background-color: #ffffff;
-    border-radius: 3px;
+    color: #6768ab;
+    box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
+    /* background-color: #6768ab; */
+    /* border: 1px solid #6768ab; */
+    border-radius: 5px;
     cursor: pointer;
     &:hover {
       background-color: #eaeaea;
