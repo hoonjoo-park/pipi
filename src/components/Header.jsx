@@ -76,7 +76,7 @@ const MenuBox = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: 20%;
+  width: 23%;
   height: 100%;
   gap: 1rem;
   margin-left: auto;
@@ -86,6 +86,6 @@ const MenuBox = styled.div`
     padding: 1em;
     width: max-content;
     font-weight: 700;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 `;

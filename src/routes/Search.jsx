@@ -37,7 +37,7 @@ function Search() {
             id="search"
             onChange={handleChange}
             value={searchText}
-            placeholder="검색하고자 하는 상대방 이메일을 입력해주세요"
+            placeholder="상대방 이메일을 입력해주세요 :)"
           />
           <SearchBtn type="submit" value="검색" />
         </FormBox>
@@ -110,6 +110,7 @@ const SearchInput = styled.input`
   margin-right: 2rem;
   font-size: 1.7rem;
   border-bottom: 2px solid #6768ab;
+  font-family: 'NeoDunggeunmo';
 `;
 const SearchBtn = styled.input`
   width: 5.5rem;
