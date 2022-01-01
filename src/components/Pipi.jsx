@@ -60,14 +60,12 @@ function Pipi({ pipi, userObject }) {
           {userObject.uid !== owner.uid && !isEdit && (
             <Cover>
               <CoverBtnBox>
-                <CoverCheck onClick={handleDelete}>확인</CoverCheck>
                 <CoverChat to={`/chat/${owner.uid}`}>대화</CoverChat>
               </CoverBtnBox>
             </Cover>
           )}
           <ProfileBox to={`/profile/${owner.uid}`}>
             <PipiProfile src={owner.photoURL} alt="profile" />
-            <span>{owner.displayName}</span>
           </ProfileBox>
           {isEdit ? (
             <>
@@ -87,10 +85,16 @@ function Pipi({ pipi, userObject }) {
             </>
           ) : (
             <>
-              <PipiTime>{convertDate(new Date(pipi.createdAt))}</PipiTime>
               <TextBox>
-                <span>{pipi.text}</span>
+                <p>{pipi.text}</p>
               </TextBox>
+              <BottomBox>
+                <BottomLeft>
+                  <h3>{owner.displayName}</h3>
+                  <PipiTime>{convertDate(new Date(pipi.createdAt))}</PipiTime>
+                </BottomLeft>
+                <CoverCheck onClick={handleDelete}>확인</CoverCheck>
+              </BottomBox>
             </>
           )}
           {userObject.uid === owner.uid && !isEdit && (
@@ -115,7 +119,6 @@ const PipiItem = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   position: relative;
   width: 80%;
@@ -134,39 +137,58 @@ const PipiItem = styled.div`
 
 const ProfileBox = styled(Link)`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  margin-top: 1rem;
+  justify-content: flex-start;
   width: 100%;
-  & > span {
-    font-size: 1.2rem;
-  }
+  margin-bottom: 1rem;
 `;
 const PipiProfile = styled.img`
-  height: 5rem;
-  width: 5rem;
-  border-radius: 15px;
-  margin-bottom: 5%;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+`;
+
+const BottomBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 15%;
+  & h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+`;
+const BottomLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  & > span {
+    font-size: 0.9rem;
+  }
 `;
 const PipiTime = styled.span`
-  position: absolute;
-  width: 80%;
-  bottom: 5%;
-  left: 50%;
-  text-align: center;
-  transform: translateX(-50%);
   color: #9b9a9a;
+`;
+const CoverCheck = styled.div`
+  background-color: #6768ab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 2rem;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
 `;
 const TextBox = styled.div`
   width: 100%;
-  height: 100%;
+  height: 60%;
+  padding: 0.3em;
   display: flex;
-  & > span {
+  & > p {
     width: 100%;
-    font-size: 1.1rem;
-    margin-top: 3rem;
-    text-align: center;
+    font-size: 1.5rem;
   }
 `;
 const EditForm = styled.form`
@@ -250,9 +272,6 @@ const CoverBtnBox = styled.div`
     color: #ffffff;
     cursor: pointer;
   }
-`;
-const CoverCheck = styled.div`
-  background-color: #6768ab;
 `;
 const CoverChat = styled(Link)`
   background-color: #1fab89;

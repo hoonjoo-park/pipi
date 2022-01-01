@@ -74,8 +74,6 @@ const ListUl = styled.ul`
     height: 4rem;
     color: #6768ab;
     box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
-    /* background-color: #6768ab; */
-    /* border: 1px solid #6768ab; */
     border-radius: 5px;
     cursor: pointer;
     &:hover {
