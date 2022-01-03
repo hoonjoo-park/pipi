@@ -1,83 +1,52 @@
-import {
-  collection,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { db } from '../firebase';
-import ChatLi from './ChatLi';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
-function ChatList({ chatRooms, userObject }) {
-  const [chatList, setChatList] = useState([]);
-  const getChatList = async () => {
-    const chatRef = collection(db, 'Chats');
-    const q = query(
-      chatRef,
-      where('people', 'array-contains-any', [userObject.uid])
-    );
-    onSnapshot(q, (snapshot) => {
-      const chats = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setChatList(chats);
+function ChatList({ userObject, chatList }) {
+  const [friendObj, setFriendObj] = useState({});
+  const navigate = useNavigate();
+  const getUser = async () => {
+    const friendId = chatList.people.filter((el) => el !== userObject.uid);
+    const docRef = collection(db, 'Users');
+    const q = query(docRef, where('uid', '==', friendId[0]));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setFriendObj(doc.data());
     });
   };
+  const toChatRoom = () => {
+    navigate(`/chat/${friendObj.uid}`);
+  };
   useEffect(() => {
-    getChatList();
+    getUser();
   }, []);
-  console.log(chatList);
   return (
-    <ListContainer>
-      <ListBox>
-        <ListUl>
-          {chatList ? (
-            chatList.map((list, i) => (
-              <ChatLi key={i} chatList={list} userObject={userObject} />
-            ))
-          ) : (
-            <li>채팅방이 비어있습니다</li>
-          )}
-        </ListUl>
-      </ListBox>
-    </ListContainer>
+    <Li onClick={toChatRoom}>
+      <ProfileImg src={friendObj.photoURL} alt="profile" />
+      <MessageBox>
+        <span>{friendObj.displayName}</span>
+        <span>{chatList.chats[chatList.chats.length - 1].text}</span>
+      </MessageBox>
+    </Li>
   );
 }
 
 export default ChatList;
-const ListContainer = styled.div`
+
+const Li = styled.li`
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100vw;
-  min-height: 90vh;
 `;
-const ListBox = styled.div`
-  border-radius: 15px;
-  padding: 2em;
-  min-height: 70vh;
-  width: 30%;
-  margin-right: 1rem;
-  background-color: #ffffff;
-  box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
+const ProfileImg = styled.img`
+  margin-right: 2rem;
+  border-radius: 50%;
 `;
-const ListUl = styled.ul`
-  width: 100%;
+const MessageBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 90%;
   height: 100%;
-  & > li {
-    display: flex;
-    align-items: center;
-    padding: 0 1em;
-    height: 4rem;
-    color: #6768ab;
-    box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
-    border-radius: 5px;
-    cursor: pointer;
-    &:hover {
-      background-color: #eaeaea;
-    }
-  }
 `;

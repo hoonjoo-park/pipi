@@ -4,65 +4,62 @@ import { auth, db } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import Loading from './Loading';
 import { doc, onSnapshot } from 'firebase/firestore';
+import { connect } from 'react-redux';
+import { userUpdate } from '../redux/authentication/userUpdate';
 
-function App() {
+function App(props) {
   const [userObject, setUserObject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const userSnapshot = (noName) => {
+  const userSnapshot = async (user) => {
     const userRef = doc(db, 'Users', auth.currentUser.email);
-    if (noName) {
+    if (!user.displayName) {
       onSnapshot(userRef, async (snapshot) => {
-        const updated = snapshot.data();
         const newUserObject = {
           displayName: 'User',
-          ...updated,
-          ...userObject,
+          ...snapshot.data(),
         };
         setUserObject(newUserObject);
-      });
-    } else {
-      onSnapshot(userRef, async (snapshot) => {
-        const updated = snapshot.data();
-        const newUserObject = { ...updated, ...userObject };
-        setUserObject(newUserObject);
+        return setIsLoading(false);
       });
     }
+    onSnapshot(userRef, async (snapshot) => {
+      setUserObject(snapshot.data());
+      return setIsLoading(false);
+    });
   };
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        if (user.displayName) {
-          userSnapshot();
-        } else {
-          userSnapshot(true);
-        }
+        userSnapshot(user);
       } else {
         setUserObject(null);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
   }, []);
   const refreshUser = () => {
-    const user = auth.currentUser;
-    setUserObject({
-      displayName: user.displayName,
-      uid: user.uid,
-      email: user.email,
-      photoURL: user.photoURL,
-      ...userObject,
-    });
+    userSnapshot(auth.currentUser);
   };
+  console.log(props);
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
         <>
-          <AppRouter refreshUser={refreshUser} userObject={userObject} />
+          <AppRouter
+            refreshUser={refreshUser}
+            userObject={userObject}
+            isLoading={isLoading}
+          />
         </>
       )}
     </>
   );
 }
-
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+export default connect(mapStateToProps)(App);

@@ -17,7 +17,7 @@ import { IoIosSend } from 'react-icons/io';
 import { AiFillDelete } from 'react-icons/ai';
 import { RiDeleteBackFill } from 'react-icons/ri';
 
-function Chat({ userObject }) {
+function ChatRoom({ userObject }) {
   const [friend, setFriend] = useState({});
   const [chatText, setChatText] = useState('');
   const [chat, setChat] = useState([]);
@@ -150,7 +150,7 @@ function Chat({ userObject }) {
   );
 }
 
-export default Chat;
+export default ChatRoom;
 
 const ChatContainer = styled.div`
   display: flex;
