@@ -5,7 +5,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import Loading from './Loading';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { connect } from 'react-redux';
-import { userUpdate } from '../redux/authentication/userUpdate';
+import { updateUser } from '../redux/authentication/userUpdate';
 
 function App(props) {
   const [userObject, setUserObject] = useState(null);
@@ -19,11 +19,13 @@ function App(props) {
           ...snapshot.data(),
         };
         setUserObject(newUserObject);
+        props.updateUser(newUserObject);
         return setIsLoading(false);
       });
     }
     onSnapshot(userRef, async (snapshot) => {
       setUserObject(snapshot.data());
+      props.updateUser(snapshot.data());
       return setIsLoading(false);
     });
   };
@@ -62,4 +64,9 @@ const mapStateToProps = (state) => {
     user: state.user,
   };
 };
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateUser: (user) => dispatch(updateUser(user)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(App);
