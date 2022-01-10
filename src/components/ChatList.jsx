@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-function ChatList({ userObject, chatList }) {
+function ChatList({ user, chatList }) {
   const [friendObj, setFriendObj] = useState({});
   const navigate = useNavigate();
   const getUser = async () => {
-    const friendId = chatList.people.filter((el) => el !== userObject.uid);
+    const friendId = chatList.people.filter((el) => el !== user.uid);
     const docRef = collection(db, 'Users');
     const q = query(docRef, where('uid', '==', friendId[0]));
     const querySnapshot = await getDocs(q);
@@ -33,7 +34,13 @@ function ChatList({ userObject, chatList }) {
   );
 }
 
-export default ChatList;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(ChatList);
 
 const Li = styled.li`
   display: flex;

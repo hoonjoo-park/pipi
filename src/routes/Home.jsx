@@ -12,8 +12,9 @@ import {
   where,
 } from 'firebase/firestore';
 import Pipi from '../components/Pipi';
+import { connect } from 'react-redux';
 
-function Home({ userObject }) {
+function Home({ user }) {
   const [isSent, setIsSent] = useState(false);
   const [pipiArray, setPipiArray] = useState([]);
   const handleVerify = () => {
@@ -23,7 +24,7 @@ function Home({ userObject }) {
   const pipiSnapshot = () => {
     const querySet = query(
       collection(db, 'Pipi'),
-      where('to', 'array-contains', userObject.uid)
+      where('to', 'array-contains', user.uid)
     );
     onSnapshot(querySet, async (snapshot) => {
       const newPipiArray = snapshot.docs.map((doc) => ({
@@ -34,21 +35,21 @@ function Home({ userObject }) {
     });
   };
   const checkRequests = async () => {
-    if (!userObject.pendingFriends) {
+    if (!user.pendingFriends) {
       return;
     }
-    const acceptedRef = doc(db, 'Accepted', userObject.uid);
+    const acceptedRef = doc(db, 'Accepted', user.uid);
     const result = await getDoc(acceptedRef);
     if (result.exists()) {
       let accepts = result.data().accepts;
-      let newPendingFriends = userObject.pendingFriends.filter(
+      let newPendingFriends = user.pendingFriends.filter(
         (el) => !accepts.includes(el)
       );
       let newFriends = [
-        ...userObject.friends,
-        ...userObject.pendingFriends.filter((el) => accepts.includes(el)),
+        ...user.friends,
+        ...user.pendingFriends.filter((el) => accepts.includes(el)),
       ];
-      const toAdd = doc(db, 'Users', userObject.email);
+      const toAdd = doc(db, 'Users', user.email);
       await updateDoc(toAdd, {
         friends: newFriends,
         pendingFriends: newPendingFriends,
@@ -65,30 +66,30 @@ function Home({ userObject }) {
   }, []);
   return (
     <HomeContainer>
-      {userObject.emailVerify ? (
+      {user.emailVerify ? (
         <>
           <div>
             <h3>이메일 인증이 필요합니다</h3>
             <button onClick={handleVerify}>인증메일 발송</button>
           </div>
-          {isSent && <h3>{userObject.email}으로 메일이 전송되었습니다</h3>}
+          {isSent && <h3>{user.email}으로 메일이 전송되었습니다</h3>}
         </>
       ) : (
         <>
           <ProfileBox>
             <img
-              src={userObject.photoURL}
+              src={user.photoURL}
               style={{ borderRadius: '50%' }}
               alt="profile"
             />
-            <h3>{userObject.displayName}</h3>
+            <h3>{user.displayName}</h3>
             <hr />
           </ProfileBox>
           <PipiContainer>
             <PipiBox>
               {pipiArray.length > 0 &&
                 pipiArray.map((pipi) => (
-                  <Pipi key={pipi.id} pipi={pipi} userObject={userObject} />
+                  <Pipi key={pipi.id} pipi={pipi} user={user} />
                 ))}
             </PipiBox>
           </PipiContainer>
@@ -98,7 +99,13 @@ function Home({ userObject }) {
   );
 }
 
-export default Home;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(Home);
 
 const HomeContainer = styled.div`
   min-height: 90vh;

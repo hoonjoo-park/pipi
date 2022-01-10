@@ -14,8 +14,9 @@ import {
 import { db } from '../firebase';
 import Loading from '../components/Loading';
 import FriendHome from './FriendHome';
+import { connect } from 'react-redux';
 
-function Profile({ userObject }) {
+function Profile({ user }) {
   const [isLoading, setIsLoading] = useState(true);
   const [friendObj, setFriendObj] = useState({});
   const [isFriend, setIsFriend] = useState(false);
@@ -32,13 +33,13 @@ function Profile({ userObject }) {
   };
   const checkFriend = async (user) => {
     if (user.friends.length > 0) {
-      if (user.friends.includes(userObject.uid)) {
+      if (user.friends.includes(user.uid)) {
         setIsFriend(true);
       }
     }
   };
   const updatePending = () => {
-    const toUpdate = doc(db, 'Users', `${userObject.email}`);
+    const toUpdate = doc(db, 'Users', `${user.email}`);
     updateDoc(toUpdate, {
       pendingFriends: [friendObj.uid],
     });
@@ -49,24 +50,24 @@ function Profile({ userObject }) {
     const result = await getDoc(docRef);
     if (result.data()) {
       const req = result.data();
-      if (!req.requests.find((el) => el.uid === userObject.uid)) {
+      if (!req.requests.find((el) => el.uid === user.uid)) {
         const toPush = req.requests;
-        toPush.push({ email: userObject.email, uid: userObject.uid });
+        toPush.push({ email: user.email, uid: user.uid });
         await updateDoc(docRef, {
           requests: toPush,
         });
       }
     } else {
       await setDoc(doc(db, 'Requests', friendObj.uid), {
-        requests: [{ email: userObject.email, uid: userObject.uid }],
+        requests: [{ email: user.email, uid: user.uid }],
       });
     }
   };
   const handleRequest = (e) => {
     e.preventDefault();
     createRequest();
-    if (userObject.pendingFriends) {
-      if (!userObject.pendingFriends.includes(friendObj.uid)) {
+    if (user.pendingFriends) {
+      if (!user.pendingFriends.includes(friendObj.uid)) {
         updatePending();
       } else {
         window.alert('이미 전송된 요청입니다 😓');
@@ -87,7 +88,7 @@ function Profile({ userObject }) {
       ) : (
         <>
           {isFriend ? (
-            <FriendHome userObject={userObject} friendObj={friendObj} />
+            <FriendHome user={user} friendObj={friendObj} />
           ) : (
             <>
               <ProfileContainer>
@@ -106,7 +107,13 @@ function Profile({ userObject }) {
   );
 }
 
-export default Profile;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(Profile);
 
 const ProfileContainer = styled.div`
   display: flex;

@@ -2,12 +2,13 @@ import { updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { auth, bucket, db } from '../firebase';
-function EditProfile({ refreshUser, userObject }) {
-  const [newName, setNewName] = useState(`${userObject.displayName}`);
-  const [newAvatar, setNewAvatar] = useState(`${userObject.photoURL}`);
+function EditProfile({ refreshUser, user }) {
+  const [newName, setNewName] = useState(`${user.displayName}`);
+  const [newAvatar, setNewAvatar] = useState(`${user.photoURL}`);
   let param = useParams();
   let navigate = useNavigate();
   const handleChange = (e) => {
@@ -31,24 +32,24 @@ function EditProfile({ refreshUser, userObject }) {
     reader.readAsDataURL(file);
   };
   const handleCancel = () => {
-    setNewAvatar(userObject.photoURL);
+    setNewAvatar(user.photoURL);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newAvatar !== userObject.photoURL) {
-      const bucketRef = await ref(bucket, `profileImage/${userObject.uid}`);
+    if (newAvatar !== user.photoURL) {
+      const bucketRef = await ref(bucket, `profileImage/${user.uid}`);
       const response = await uploadString(bucketRef, newAvatar, 'data_url');
       let newURL = await getDownloadURL(response.ref);
       setNewAvatar(newURL);
       await updateProfile(auth.currentUser, { photoURL: newURL });
       refreshUser();
-      const toUpdate = doc(db, 'Users', `${userObject.photoURL}`);
+      const toUpdate = doc(db, 'Users', `${user.photoURL}`);
       await updateDoc(toUpdate, {
         photoURL: newURL,
       });
     }
-    if (newName !== userObject.displayName) {
-      const toUpdate = doc(db, 'Users', `${userObject.email}`);
+    if (newName !== user.displayName) {
+      const toUpdate = doc(db, 'Users', `${user.email}`);
       await updateDoc(toUpdate, {
         displayName: newName,
       });
@@ -60,11 +61,11 @@ function EditProfile({ refreshUser, userObject }) {
   const changePW = async () => {
     if (
       window.confirm(
-        `비밀번호를 재설정하시겠습니까?\n${userObject.email}으로 메일이 전송됩니다.`
+        `비밀번호를 재설정하시겠습니까?\n${user.email}으로 메일이 전송됩니다.`
       )
     ) {
       try {
-        await sendPasswordResetEmail(auth, userObject.email);
+        await sendPasswordResetEmail(auth, user.email);
       } catch (error) {
         console.log(error.code, error.message);
       }
@@ -78,7 +79,7 @@ function EditProfile({ refreshUser, userObject }) {
       <EditForm onSubmit={handleSubmit}>
         <div>
           <ProfileImage src={newAvatar} alt="Profile" />
-          {newAvatar !== userObject.photoURL && (
+          {newAvatar !== user.photoURL && (
             <span onClick={handleCancel}>초기화</span>
           )}
         </div>
@@ -103,10 +104,10 @@ function EditProfile({ refreshUser, userObject }) {
           type="email"
           name="editEmail"
           id="editEmail"
-          value={userObject.email}
+          value={user.email}
           readOnly
         />
-        {userObject.provider === 'password' && (
+        {user.provider === 'password' && (
           <>
             <ChangePW onClick={changePW}>비밀번호 변경하기</ChangePW>
           </>
@@ -117,7 +118,13 @@ function EditProfile({ refreshUser, userObject }) {
   );
 }
 
-export default EditProfile;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(EditProfile);
 const EditProfileContainer = styled.div`
   display: flex;
   align-items: center;

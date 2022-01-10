@@ -1,23 +1,24 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { MainLogo } from '../Image';
 
-function Header({ userObject, requests }) {
+function Header({ user, requests }) {
   return (
     <Nav>
       <Logo to="/">
         <img src={MainLogo} alt="logo" />
       </Logo>
-      {userObject && (
+      {user && (
         <MenuBox>
           <Link to="/search">검색</Link>
           <Link to="/chat">채팅</Link>
           <Link to="/friends">친구</Link>
           <ProfileLink to={`/myProfile`}>
-            {userObject ? (
+            {user ? (
               <span>
-                {userObject.displayName}
+                {user.displayName}
                 <Alert exist={Boolean(requests.length > 0)}>
                   {requests && requests.length}
                 </Alert>
@@ -32,7 +33,13 @@ function Header({ userObject, requests }) {
   );
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(Header);
 
 const Nav = styled.nav`
   display: flex;

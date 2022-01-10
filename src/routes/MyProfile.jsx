@@ -6,11 +6,14 @@ import { signOut } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { connect } from 'react-redux';
+import { clearUser } from '../redux/authentication/userUpdate';
 
-function MyProfile({ userObject, requests }) {
+function MyProfile({ user, clearUser, requests }) {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
+      clearUser();
       signOut(auth);
       navigate('/');
     } catch (error) {
@@ -22,22 +25,22 @@ function MyProfile({ userObject, requests }) {
     const reqIndex = Number.parseInt(e.target.parentNode.dataset.index);
     const reqUid = e.target.parentNode.dataset.uid;
     let newRequests = requests.filter((el, i) => i !== reqIndex);
-    let newPendingFriends = userObject.pendingFriends.filter(
+    let newPendingFriends = user.pendingFriends.filter(
       (el, i) => i !== reqIndex
     );
-    let newFriends = [...userObject.friends, reqUid];
-    const toUpdate = doc(db, 'Users', userObject.email);
+    let newFriends = [...user.friends, reqUid];
+    const toUpdate = doc(db, 'Users', user.email);
     await updateDoc(toUpdate, {
       friends: newFriends,
       pendingFriends: newPendingFriends,
     });
-    const toDelete = doc(db, 'Requests', userObject.uid);
+    const toDelete = doc(db, 'Requests', user.uid);
     await updateDoc(toDelete, {
       requests: newRequests,
     });
     window.alert('친구요청이 수락되었습니다');
     await setDoc(doc(db, 'Accepted', reqUid), {
-      accepts: [userObject.uid],
+      accepts: [user.uid],
     });
   };
   const handleReject = (e) => {
@@ -46,16 +49,13 @@ function MyProfile({ userObject, requests }) {
   return (
     <ProfileContainer>
       <ProfileBox>
-        <ProfileImage
-          src={userObject.photoURL && userObject.photoURL}
-          alt="profile"
-        />
-        <ProfileLi>{userObject && userObject.displayName}</ProfileLi>
-        <ProfileLi>{userObject && userObject.email}</ProfileLi>
-        {userObject.uid === auth.currentUser.uid && (
+        <ProfileImage src={user.photoURL && user.photoURL} alt="profile" />
+        <ProfileLi>{user && user.displayName}</ProfileLi>
+        <ProfileLi>{user && user.email}</ProfileLi>
+        {user.uid === auth.currentUser.uid && (
           <>
             <Logout onClick={handleLogout}>로그아웃</Logout>
-            <Edit to={`/editProfile/${userObject.uid}`}>프로필 수정</Edit>
+            <Edit to={`/editProfile/${user.uid}`}>프로필 수정</Edit>
           </>
         )}
       </ProfileBox>
@@ -91,7 +91,18 @@ function MyProfile({ userObject, requests }) {
   );
 }
 
-export default MyProfile;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearUser: () => dispatch(clearUser()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyProfile);
 
 const ProfileContainer = styled.div`
   display: flex;

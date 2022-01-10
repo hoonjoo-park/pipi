@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import FriendLi from '../components/FriendLi';
-function FriendList({ userObject }) {
+function FriendList({ user }) {
   const [friends, setFriends] = useState([]);
   useEffect(() => {
-    setFriends(userObject.friends);
+    setFriends(user.friends);
   }, []);
   return (
     <FriendListContainer>
@@ -18,7 +19,13 @@ function FriendList({ userObject }) {
   );
 }
 
-export default FriendList;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(FriendList);
 const FriendListContainer = styled.div`
   display: flex;
   align-items: center;

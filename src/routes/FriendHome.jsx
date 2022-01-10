@@ -11,8 +11,9 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../firebase';
 import Pipi from '../components/Pipi';
+import { connect } from 'react-redux';
 
-function FriendHome({ userObject, friendObj }) {
+function FriendHome({ user, friendObj }) {
   const [pipiText, setPipiText] = useState('');
   const [pipiArray, setPipiArray] = useState([]);
   const param = useParams();
@@ -41,7 +42,7 @@ function FriendHome({ userObject, friendObj }) {
   const handlePipiSubmit = (e) => {
     e.preventDefault();
     addDoc(collection(db, 'Pipi'), {
-      owner: doc(db, 'Users', `${userObject.email}`),
+      owner: doc(db, 'Users', `${user.email}`),
       text: pipiText,
       to: [param.id],
       createdAt: Date.now(),
@@ -60,7 +61,7 @@ function FriendHome({ userObject, friendObj }) {
           <h3>{friendObj.displayName}</h3>
         </ProfileBox>
         <FormContainer onSubmit={handlePipiSubmit}>
-          <img src={userObject.photoURL} alt="profile" />
+          <img src={user.photoURL} alt="profile" />
           <form>
             <FormText
               type="text"
@@ -80,16 +81,20 @@ function FriendHome({ userObject, friendObj }) {
       <PipiContainer>
         <PipiBox>
           {pipiArray.length > 0 &&
-            pipiArray.map((pipi) => (
-              <Pipi key={pipi.id} pipi={pipi} userObject={userObject} />
-            ))}
+            pipiArray.map((pipi) => <Pipi key={pipi.id} pipi={pipi} />)}
         </PipiBox>
       </PipiContainer>
     </FriendHomeContainer>
   );
 }
 
-export default FriendHome;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(FriendHome);
 const FriendHomeContainer = styled.div`
   min-height: 90vh;
   height: 100%;

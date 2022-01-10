@@ -18,14 +18,15 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import ChatRoom from '../routes/ChatRoom';
 import ChatBox from '../routes/ChatBox';
 import FriendList from '../routes/FriendList';
+import { connect } from 'react-redux';
 
-function AppRouter({ refreshUser, userObject, isLoading }) {
+function AppRouter({ refreshUser, isLoading, user }) {
   const [requests, setRequests] = useState([]);
   const getRequests = () => {
-    if (!userObject) {
+    if (!user) {
       return;
     }
-    const reqRef = doc(db, 'Requests', userObject.uid);
+    const reqRef = doc(db, 'Requests', user.uid);
     onSnapshot(reqRef, (snapshot) => {
       const reqs = snapshot.data();
       if (reqs) {
@@ -36,61 +37,40 @@ function AppRouter({ refreshUser, userObject, isLoading }) {
   useEffect(() => {
     getRequests();
   }, []);
+  console.log(user);
   return (
     <Router>
-      <Header userObject={userObject} requests={requests} />
+      <Header requests={requests} />
       <Routes>
         <>
-          {userObject && !isLoading ? (
+          {user && !isLoading ? (
             <Route
               path={'/'}
               exact
-              element={
-                <Home refreshUser={refreshUser} userObject={userObject} />
-              }
+              element={<Home refreshUser={refreshUser} />}
             />
           ) : (
             <Route
               path={'/'}
               exact
-              element={
-                <Auth refreshUser={refreshUser} userObject={userObject} />
-              }
+              element={<Auth refreshUser={refreshUser} />}
             />
           )}
           <Route
             path={'/myProfile'}
             exact
-            element={<MyProfile userObject={userObject} requests={requests} />}
+            element={<MyProfile requests={requests} />}
           />
-          <Route
-            path={'/profile/:id'}
-            exact
-            element={<Profile userObject={userObject} />}
-          />
+          <Route path={'/profile/:id'} exact element={<Profile />} />
           <Route
             path={'/editProfile/:id'}
             exact
-            element={
-              <EditProfile refreshUser={refreshUser} userObject={userObject} />
-            }
+            element={<EditProfile refreshUser={refreshUser} />}
           />
           <Route path={'/search'} exact element={<Search />} />
-          <Route
-            path={'/chat'}
-            exact
-            element={<ChatBox userObject={userObject} />}
-          />
-          <Route
-            path={'/chat/:id'}
-            exact
-            element={<ChatRoom userObject={userObject} />}
-          />
-          <Route
-            path={'/friends'}
-            exact
-            element={<FriendList userObject={userObject} />}
-          />
+          <Route path={'/chat'} exact element={<ChatBox />} />
+          <Route path={'/chat/:id'} exact element={<ChatRoom />} />
+          <Route path={'/friends'} exact element={<FriendList />} />
         </>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
@@ -98,5 +78,10 @@ function AppRouter({ refreshUser, userObject, isLoading }) {
     </Router>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
 
-export default AppRouter;
+export default connect(mapStateToProps)(AppRouter);

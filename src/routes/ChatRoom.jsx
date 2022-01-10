@@ -16,8 +16,9 @@ import { db } from '../firebase';
 import { IoIosSend } from 'react-icons/io';
 import { AiFillDelete } from 'react-icons/ai';
 import { RiDeleteBackFill } from 'react-icons/ri';
+import { connect } from 'react-redux';
 
-function ChatRoom({ userObject }) {
+function ChatRoom({ user }) {
   const [friend, setFriend] = useState({});
   const [chatText, setChatText] = useState('');
   const [chat, setChat] = useState([]);
@@ -29,7 +30,7 @@ function ChatRoom({ userObject }) {
     const chatRef = collection(db, 'Chats');
     const q = query(
       chatRef,
-      where('people', 'array-contains-any', [userObject.uid, params.id])
+      where('people', 'array-contains-any', [user.uid, params.id])
     );
     const q2 = query(userRef, where('uid', '==', params.id));
     const result = await getDocs(q);
@@ -55,7 +56,7 @@ function ChatRoom({ userObject }) {
   };
   const setChatroom = async () => {
     await addDoc(collection(db, 'Chats'), {
-      people: [userObject.uid, params.id],
+      people: [user.uid, params.id],
       chats: [],
     });
   };
@@ -74,7 +75,7 @@ function ChatRoom({ userObject }) {
     await updateDoc(chatRoomRef, {
       chats: [
         ...chat,
-        { from: userObject.uid, text: chatText, createdAt: Date.now() },
+        { from: user.uid, text: chatText, createdAt: Date.now() },
       ],
     });
     setChatText('');
@@ -114,11 +115,8 @@ function ChatRoom({ userObject }) {
         <ChatUl>
           {chat &&
             chat.map((el, i) => (
-              <li
-                key={i}
-                className={el.from === userObject.uid ? 'my' : 'other'}
-              >
-                {el.from !== userObject.uid && (
+              <li key={i} className={el.from === user.uid ? 'my' : 'other'}>
+                {el.from !== user.uid && (
                   <FriendProfile>
                     <span>{friend.displayName}</span>
                     <img src={friend.photoURL} alt="profile" />
@@ -150,7 +148,13 @@ function ChatRoom({ userObject }) {
   );
 }
 
-export default ChatRoom;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(ChatRoom);
 
 const ChatContainer = styled.div`
   display: flex;

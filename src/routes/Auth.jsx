@@ -12,6 +12,7 @@ import styled from 'styled-components';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { doc, setDoc } from 'firebase/firestore';
+import { connect } from 'react-redux';
 
 function Auth({ refreshUser }) {
   const [isJoin, setIsJoin] = useState(false);
@@ -45,7 +46,7 @@ function Auth({ refreshUser }) {
             email,
             password
           );
-          user = await userCredential.user;
+          user = userCredential.user;
           await updateProfile(user, {
             displayName: userName,
             photoURL: `https://avatars.dicebear.com/api/adventurer-neutral/${user.uid}.svg?size=50`,
@@ -183,7 +184,13 @@ function Auth({ refreshUser }) {
   );
 }
 
-export default Auth;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(Auth);
 
 const AuthContainer = styled.div`
   display: flex;

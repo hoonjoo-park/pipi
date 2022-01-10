@@ -5,10 +5,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 import Loading from './Loading';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { connect } from 'react-redux';
-import { updateUser } from '../redux/authentication/userUpdate';
+import { updateUser, clearUser } from '../redux/authentication/userUpdate';
 
-function App(props) {
-  const [userObject, setUserObject] = useState(null);
+function App({ user, updateUser }) {
   const [isLoading, setIsLoading] = useState(true);
   const userSnapshot = async (user) => {
     const userRef = doc(db, 'Users', auth.currentUser.email);
@@ -18,14 +17,12 @@ function App(props) {
           displayName: 'User',
           ...snapshot.data(),
         };
-        setUserObject(newUserObject);
-        props.updateUser(newUserObject);
+        updateUser(newUserObject);
         return setIsLoading(false);
       });
     }
     onSnapshot(userRef, async (snapshot) => {
-      setUserObject(snapshot.data());
-      props.updateUser(snapshot.data());
+      updateUser(snapshot.data());
       return setIsLoading(false);
     });
   };
@@ -34,7 +31,7 @@ function App(props) {
       if (user) {
         userSnapshot(user);
       } else {
-        setUserObject(null);
+        clearUser();
         setIsLoading(false);
       }
     });
@@ -42,18 +39,13 @@ function App(props) {
   const refreshUser = () => {
     userSnapshot(auth.currentUser);
   };
-  console.log(props);
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
         <>
-          <AppRouter
-            refreshUser={refreshUser}
-            userObject={userObject}
-            isLoading={isLoading}
-          />
+          <AppRouter refreshUser={refreshUser} isLoading={isLoading} />
         </>
       )}
     </>
@@ -67,6 +59,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     updateUser: (user) => dispatch(updateUser(user)),
+    clearUser: () => dispatch(clearUser()),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(App);

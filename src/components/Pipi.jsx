@@ -5,8 +5,9 @@ import { db } from '../firebase';
 import styled from 'styled-components';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
 import { MdOutlineCancel } from 'react-icons/md';
+import { connect } from 'react-redux';
 
-function Pipi({ pipi, userObject }) {
+function Pipi({ pipi, user }) {
   const [newPipi, setNewPipi] = useState(pipi.text);
   const [isEdit, setIsEdit] = useState(false);
   const [owner, setOwner] = useState({});
@@ -57,7 +58,7 @@ function Pipi({ pipi, userObject }) {
     <>
       {
         <PipiItem id={pipi.id}>
-          {userObject.uid !== owner.uid && !isEdit && (
+          {user.uid !== owner.uid && !isEdit && (
             <Cover>
               <CoverBtnBox>
                 <CoverChat to={`/chat/${owner.uid}`}>대화</CoverChat>
@@ -97,7 +98,7 @@ function Pipi({ pipi, userObject }) {
               </BottomBox>
             </>
           )}
-          {userObject.uid === owner.uid && !isEdit && (
+          {user.uid === owner.uid && !isEdit && (
             <EditBox id="editBox">
               <span onClick={toggleUpdate}>
                 <AiFillEdit />
@@ -113,7 +114,13 @@ function Pipi({ pipi, userObject }) {
   );
 }
 
-export default Pipi;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(Pipi);
 
 const PipiItem = styled.div`
   position: relative;

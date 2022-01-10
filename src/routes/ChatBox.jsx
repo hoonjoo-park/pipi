@@ -9,15 +9,13 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { db } from '../firebase';
 import ChatList from '../components/ChatList';
+import { connect } from 'react-redux';
 
-function ChatBox({ chatRooms, userObject }) {
+function ChatBox({ chatRooms, user }) {
   const [chatList, setChatList] = useState([]);
   const getChatList = async () => {
     const chatRef = collection(db, 'Chats');
-    const q = query(
-      chatRef,
-      where('people', 'array-contains-any', [userObject.uid])
-    );
+    const q = query(chatRef, where('people', 'array-contains-any', [user.uid]));
     onSnapshot(q, (snapshot) => {
       const chats = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -35,9 +33,7 @@ function ChatBox({ chatRooms, userObject }) {
       <ListBox>
         <ListUl>
           {chatList ? (
-            chatList.map((list, i) => (
-              <ChatList key={i} chatList={list} userObject={userObject} />
-            ))
+            chatList.map((list, i) => <ChatList key={i} chatList={list} />)
           ) : (
             <li>채팅방이 비어있습니다</li>
           )}
@@ -47,7 +43,13 @@ function ChatBox({ chatRooms, userObject }) {
   );
 }
 
-export default ChatBox;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(ChatBox);
 const ListContainer = styled.div`
   display: flex;
   align-items: center;
