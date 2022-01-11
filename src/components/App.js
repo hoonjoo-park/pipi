@@ -17,35 +17,33 @@ function App({ user, updateUser }) {
           displayName: 'User',
           ...snapshot.data(),
         };
-        updateUser(newUserObject);
+        await updateUser(newUserObject);
         return setIsLoading(false);
       });
     }
     onSnapshot(userRef, async (snapshot) => {
-      updateUser(snapshot.data());
+      await updateUser(snapshot.data());
       return setIsLoading(false);
     });
   };
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        setIsLoading(true);
         userSnapshot(user);
       } else {
-        clearUser();
+        setIsLoading(true);
         setIsLoading(false);
       }
     });
   }, []);
-  const refreshUser = () => {
-    userSnapshot(auth.currentUser);
-  };
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
         <>
-          <AppRouter refreshUser={refreshUser} isLoading={isLoading} />
+          <AppRouter isLoading={isLoading} />
         </>
       )}
     </>

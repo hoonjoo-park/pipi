@@ -13,8 +13,9 @@ import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { doc, setDoc } from 'firebase/firestore';
 import { connect } from 'react-redux';
+import { updateUser } from '../redux/authentication/userUpdate';
 
-function Auth({ refreshUser }) {
+function Auth({ user, updateUser }) {
   const [isJoin, setIsJoin] = useState(false);
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -47,16 +48,11 @@ function Auth({ refreshUser }) {
             password
           );
           user = userCredential.user;
-          await updateProfile(user, {
-            displayName: userName,
-            photoURL: `https://avatars.dicebear.com/api/adventurer-neutral/${user.uid}.svg?size=50`,
-          });
-          refreshUser();
           await setDoc(doc(db, 'Users', auth.currentUser.email), {
-            uid: auth.currentUser.uid,
-            displayName: auth.currentUser.displayName,
-            email: auth.currentUser.email,
-            photoURL: auth.currentUser.photoURL,
+            uid: user.uid,
+            displayName: userName,
+            email: email,
+            photoURL: `https://avatars.dicebear.com/api/adventurer-neutral/${user.uid}.svg?size=50`,
             friends: [],
             pendingFriends: [],
           });
@@ -98,7 +94,6 @@ function Auth({ refreshUser }) {
       provider = new GithubAuthProvider();
     }
     await signInWithPopup(auth, provider);
-    refreshUser();
   };
   return (
     <AuthContainer>
@@ -190,7 +185,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Auth);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateUser: (user) => dispatch(updateUser(user)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
 
 const AuthContainer = styled.div`
   display: flex;

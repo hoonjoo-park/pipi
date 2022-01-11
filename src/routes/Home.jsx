@@ -13,14 +13,15 @@ import {
 } from 'firebase/firestore';
 import Pipi from '../components/Pipi';
 import { connect } from 'react-redux';
+import Loading from '../components/Loading';
 
 function Home({ user }) {
   const [isSent, setIsSent] = useState(false);
   const [pipiArray, setPipiArray] = useState([]);
-  const handleVerify = () => {
-    setIsSent(true);
-    sendEmailVerification(auth.currentUser);
-  };
+  // const handleVerify = () => {
+  //   setIsSent(true);
+  //   sendEmailVerification(auth.currentUser);
+  // };
   const pipiSnapshot = () => {
     const querySet = query(
       collection(db, 'Pipi'),
@@ -35,7 +36,7 @@ function Home({ user }) {
     });
   };
   const checkRequests = async () => {
-    if (!user.pendingFriends) {
+    if (!user) {
       return;
     }
     const acceptedRef = doc(db, 'Accepted', user.uid);
@@ -66,15 +67,16 @@ function Home({ user }) {
   }, []);
   return (
     <HomeContainer>
-      {user.emailVerify ? (
-        <>
-          <div>
-            <h3>이메일 인증이 필요합니다</h3>
-            <button onClick={handleVerify}>인증메일 발송</button>
-          </div>
-          {isSent && <h3>{user.email}으로 메일이 전송되었습니다</h3>}
-        </>
+      {!user ? (
+        <Loading />
       ) : (
+        // <>
+        //   <div>
+        //     <h3>이메일 인증이 필요합니다</h3>
+        //     <button onClick={handleVerify}>인증메일 발송</button>
+        //   </div>
+        //   {isSent && <h3>{user.email}으로 메일이 전송되었습니다</h3>}
+        // </>
         <>
           <ProfileBox>
             <img

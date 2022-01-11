@@ -13,9 +13,10 @@ function MyProfile({ user, clearUser, requests }) {
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
-      clearUser();
+      await clearUser();
       signOut(auth);
       navigate('/');
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

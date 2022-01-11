@@ -19,8 +19,9 @@ import ChatRoom from '../routes/ChatRoom';
 import ChatBox from '../routes/ChatBox';
 import FriendList from '../routes/FriendList';
 import { connect } from 'react-redux';
+import Loading from './Loading';
 
-function AppRouter({ refreshUser, isLoading, user }) {
+function AppRouter({ isLoading, user }) {
   const [requests, setRequests] = useState([]);
   const getRequests = () => {
     if (!user) {
@@ -44,17 +45,9 @@ function AppRouter({ refreshUser, isLoading, user }) {
       <Routes>
         <>
           {user && !isLoading ? (
-            <Route
-              path={'/'}
-              exact
-              element={<Home refreshUser={refreshUser} />}
-            />
+            <Route path={'/'} exact element={<Home />} />
           ) : (
-            <Route
-              path={'/'}
-              exact
-              element={<Auth refreshUser={refreshUser} />}
-            />
+            <Route path={'/'} exact element={<Auth />} />
           )}
           <Route
             path={'/myProfile'}
@@ -62,11 +55,7 @@ function AppRouter({ refreshUser, isLoading, user }) {
             element={<MyProfile requests={requests} />}
           />
           <Route path={'/profile/:id'} exact element={<Profile />} />
-          <Route
-            path={'/editProfile/:id'}
-            exact
-            element={<EditProfile refreshUser={refreshUser} />}
-          />
+          <Route path={'/editProfile/:id'} exact element={<EditProfile />} />
           <Route path={'/search'} exact element={<Search />} />
           <Route path={'/chat'} exact element={<ChatBox />} />
           <Route path={'/chat/:id'} exact element={<ChatRoom />} />

@@ -41,6 +41,7 @@ const FriendUl = styled.ul`
   border-radius: 15px;
   background-color: #ffffff;
   box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
+  overflow: scroll;
   & > h3 {
     font-weight: 700;
     font-size: 1.7rem;
