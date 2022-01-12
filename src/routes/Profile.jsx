@@ -29,14 +29,12 @@ function Profile({ user }) {
       checkFriend(doc.data());
       setFriendObj(doc.data());
     });
-    setIsLoading(false);
   };
-  const checkFriend = async (user) => {
+  const checkFriend = async (friend) => {
     if (user.friends.length > 0) {
-      if (user.friends.includes(user.uid)) {
-        setIsFriend(true);
-      }
+      user.friends.includes(friend.uid) && setIsFriend(true);
     }
+    setIsLoading(false);
   };
   const updatePending = () => {
     const toUpdate = doc(db, 'Users', `${user.email}`);
@@ -76,6 +74,7 @@ function Profile({ user }) {
       updatePending();
     }
   };
+  console.log(user, isFriend);
   useEffect(() => {
     getUser();
   }, []);

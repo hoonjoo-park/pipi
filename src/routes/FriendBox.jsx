@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import FriendLi from '../components/FriendLi';
-function FriendList({ user }) {
+function FriendBox({ user }) {
   const [friends, setFriends] = useState([]);
   useEffect(() => {
     setFriends(user.friends);
@@ -11,9 +11,11 @@ function FriendList({ user }) {
     <FriendListContainer>
       <FriendUl>
         <h3>친구목록</h3>
-        {friends.map((list, i) => (
-          <FriendLi key={i} friendId={list} />
-        ))}
+        {friends.length !== 0 ? (
+          friends.map((list, i) => <FriendLi key={i} friendId={list} />)
+        ) : (
+          <li>등록된 친구가 없습니다</li>
+        )}
       </FriendUl>
     </FriendListContainer>
   );
@@ -25,7 +27,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(FriendList);
+export default connect(mapStateToProps)(FriendBox);
 const FriendListContainer = styled.div`
   display: flex;
   align-items: center;

@@ -32,7 +32,7 @@ function ChatBox({ chatRooms, user }) {
     <ListContainer>
       <ListBox>
         <ListUl>
-          {chatList ? (
+          {chatList.length !== 0 ? (
             chatList.map((list, i) => <ChatList key={i} chatList={list} />)
           ) : (
             <li>채팅방이 비어있습니다</li>
@@ -69,7 +69,7 @@ const ListBox = styled.div`
 const ListUl = styled.ul`
   width: 100%;
   height: 100%;
-  & > li {
+  & li {
     display: flex;
     align-items: center;
     padding: 0 1em;

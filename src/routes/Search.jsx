@@ -104,11 +104,11 @@ const FormBox = styled.form`
 `;
 const SearchInput = styled.input`
   display: block;
-  width: 70%;
+  width: 50%;
   height: 4rem;
   padding: 0.5em;
   margin-right: 2rem;
-  font-size: 1.7rem;
+  font-size: 1.4rem;
   border-bottom: 2px solid #6768ab;
   font-family: 'NeoDunggeunmo';
 `;

@@ -32,12 +32,12 @@ const Li = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 90%;
   height: 3.5rem;
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
-  margin: 1rem;
+  margin: 1.5rem auto;
   & > img {
     height: 70%;
     border-radius: 50%;

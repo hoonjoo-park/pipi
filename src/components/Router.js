@@ -17,7 +17,7 @@ import { db } from '../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import ChatRoom from '../routes/ChatRoom';
 import ChatBox from '../routes/ChatBox';
-import FriendList from '../routes/FriendList';
+import FriendBox from '../routes/FriendBox';
 import { connect } from 'react-redux';
 import Loading from './Loading';
 
@@ -59,7 +59,7 @@ function AppRouter({ isLoading, user }) {
           <Route path={'/search'} exact element={<Search />} />
           <Route path={'/chat'} exact element={<ChatBox />} />
           <Route path={'/chat/:id'} exact element={<ChatRoom />} />
-          <Route path={'/friends'} exact element={<FriendList />} />
+          <Route path={'/friends'} exact element={<FriendBox />} />
         </>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
