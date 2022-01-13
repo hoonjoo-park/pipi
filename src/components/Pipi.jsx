@@ -58,15 +58,13 @@ function Pipi({ pipi, user }) {
     <>
       {
         <PipiItem id={pipi.id}>
-          {user.uid !== owner.uid && !isEdit && (
-            <Cover>
-              <CoverBtnBox>
-                <CoverChat to={`/chat/${owner.uid}`}>대화</CoverChat>
-              </CoverBtnBox>
-            </Cover>
-          )}
-          <ProfileBox to={`/profile/${owner.uid}`}>
-            <PipiProfile src={owner.photoURL} alt="profile" />
+          <ProfileBox>
+            <PipiProfile to={`/profile/${owner.uid}`} src={owner.photoURL} />
+            {user.uid !== owner.uid && !isEdit && (
+              <CoverChat className="chatBtn" to={`/chat/${owner.uid}`}>
+                대화
+              </CoverChat>
+            )}
           </ProfileBox>
           {isEdit ? (
             <>
@@ -128,8 +126,8 @@ const PipiItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 80%;
-  height: 18rem;
+  width: 75%;
+  height: 16rem;
   margin: 2rem auto;
   padding: 1em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
@@ -137,22 +135,37 @@ const PipiItem = styled.div`
   &:hover #editBox {
     opacity: 1;
   }
-  &:hover > div:nth-child(1) {
+  &:hover .chatBtn {
     opacity: 1;
   }
 `;
 
-const ProfileBox = styled(Link)`
+const ProfileBox = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
   margin-bottom: 1rem;
 `;
-const PipiProfile = styled.img`
-  height: 3rem;
-  width: 3rem;
+const PipiProfile = styled(Link)`
+  background-image: url(${(props) => props.src});
+  background-position: center;
+  background-size: contain;
+  height: 2.5rem;
+  width: 2.5rem;
   border-radius: 50%;
+`;
+
+const CoverChat = styled(Link)`
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  padding: 0.5em;
+  color: #ffffff;
+  background-color: #1fab89;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
 `;
 
 const BottomBox = styled.div`
@@ -170,6 +183,7 @@ const BottomLeft = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-size: 1.1rem;
   & > span {
     font-size: 0.9rem;
   }
@@ -195,7 +209,7 @@ const TextBox = styled.div`
   display: flex;
   & > p {
     width: 100%;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 `;
 const EditForm = styled.form`
@@ -248,38 +262,4 @@ const EditBox = styled.div`
   & > :last-child {
     color: #d64f78;
   }
-`;
-const Cover = styled.div`
-  position: absolute;
-  opacity: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #eaeaea;
-  border-radius: 15px;
-  transition: 0.2s ease-in-out;
-`;
-const CoverBtnBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 80%;
-  & > div,
-  a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 4.5rem;
-    height: 2.5rem;
-    border-radius: 10px;
-    color: #ffffff;
-    cursor: pointer;
-  }
-`;
-const CoverChat = styled(Link)`
-  background-color: #1fab89;
 `;

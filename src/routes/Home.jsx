@@ -79,12 +79,7 @@ function Home({ user }) {
         // </>
         <>
           <ProfileBox>
-            <img
-              src={user.photoURL}
-              style={{ borderRadius: '50%' }}
-              alt="profile"
-            />
-            <h3>{user.displayName}</h3>
+            <h3>나의 삐삐</h3>
             <hr />
           </ProfileBox>
           <PipiContainer>
@@ -110,18 +105,21 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(Home);
 
 const HomeContainer = styled.div`
-  min-height: 90vh;
+  display: inline-block;
+  /* border: 1px solid #444444; */
+  min-height: 85vh;
   height: 100%;
   width: 70vw;
-  margin: auto;
+  margin: 2.5rem 0 0 24vw;
   padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0px 3px 14px -3px rgba(0, 0, 0, 0.71);
 `;
 const ProfileBox = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
   flex-direction: column;
-  margin-top: 2rem;
+  margin-top: 1rem;
   & > img {
     width: 5rem;
     margin-bottom: 1rem;
@@ -130,7 +128,8 @@ const ProfileBox = styled.div`
     font-size: 1.4rem;
     font-weight: 700;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
   }
   & > hr {
     width: 100%;

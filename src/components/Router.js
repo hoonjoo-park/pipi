@@ -20,6 +20,8 @@ import ChatBox from '../routes/ChatBox';
 import FriendBox from '../routes/FriendBox';
 import { connect } from 'react-redux';
 import Loading from './Loading';
+import Sidebar from './Sidebar';
+import MainView from './MainView';
 
 function AppRouter({ isLoading, user }) {
   const [requests, setRequests] = useState([]);
@@ -42,6 +44,7 @@ function AppRouter({ isLoading, user }) {
   return (
     <Router>
       <Header requests={requests} />
+      <Sidebar />
       <Routes>
         <>
           {user && !isLoading ? (
@@ -63,7 +66,7 @@ function AppRouter({ isLoading, user }) {
         </>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      <Footer />
+      {/* <Footer /> */}
     </Router>
   );
 }

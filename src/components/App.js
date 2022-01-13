@@ -6,6 +6,7 @@ import Loading from './Loading';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { connect } from 'react-redux';
 import { updateUser, clearUser } from '../redux/authentication/userUpdate';
+import MainView from './MainView';
 
 function App({ user, updateUser }) {
   const [isLoading, setIsLoading] = useState(true);

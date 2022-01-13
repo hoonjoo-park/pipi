@@ -45,8 +45,9 @@ const Nav = styled.nav`
   display: flex;
   align-items: center;
   width: 100vw;
-  height: 10vh;
-  box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
+  height: 8vh;
+  background-color: #434472;
+  /* box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71); */
 `;
 const ProfileLink = styled(Link)`
   & > span {
@@ -72,7 +73,7 @@ const Logo = styled(Link)`
   align-items: center;
   font-size: 1.5rem;
   font-weight: 700;
-  margin-left: 15vw;
+  margin-left: 4.5vw;
   padding: 1em;
   & > img {
     width: 6rem;
@@ -87,12 +88,13 @@ const MenuBox = styled.div`
   height: 100%;
   gap: 1rem;
   margin-left: auto;
-  margin-right: 15vw;
+  margin-right: 6vw;
   & > * {
     text-align: center;
     padding: 1em;
     width: max-content;
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+    color: #ffffff;
   }
 `;

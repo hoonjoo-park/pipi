@@ -4,7 +4,6 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
-  updateProfile,
 } from 'firebase/auth';
 import React, { useState } from 'react';
 import { auth, db } from '../firebase';
@@ -12,10 +11,8 @@ import styled from 'styled-components';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { doc, setDoc } from 'firebase/firestore';
-import { connect } from 'react-redux';
-import { updateUser } from '../redux/authentication/userUpdate';
 
-function Auth({ user, updateUser }) {
+function Auth() {
   const [isJoin, setIsJoin] = useState(false);
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -179,19 +176,7 @@ function Auth({ user, updateUser }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    user: state.user,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUser: (user) => dispatch(updateUser(user)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Auth);
+export default Auth;
 
 const AuthContainer = styled.div`
   display: flex;
@@ -205,7 +190,7 @@ const AuthForm = styled.form`
   flex-direction: column;
   align-items: center;
   width: 30vw;
-  height: 85%;
+  height: 80%;
   margin: auto;
   padding: 1em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
@@ -214,7 +199,7 @@ const AuthForm = styled.form`
 const FormTitle = styled.h3`
   font-size: 1.8rem;
   font-weight: 600;
-  margin: 2em 0 2.5em 0;
+  margin: 1.5em;
 `;
 const AuthInputs = styled.input`
   width: 50%;
