@@ -11,7 +11,7 @@ import { db } from '../firebase';
 import ChatList from '../components/ChatList';
 import { connect } from 'react-redux';
 
-function ChatBox({ chatRooms, user }) {
+function Chat({ user }) {
   const [chatList, setChatList] = useState([]);
   const getChatList = async () => {
     const chatRef = collection(db, 'Chats');
@@ -24,23 +24,24 @@ function ChatBox({ chatRooms, user }) {
       setChatList(chats);
     });
   };
+  const handleClick = () => {
+    console.log('hi');
+  };
   useEffect(() => {
     getChatList();
   }, []);
   console.log(chatList);
   return (
-    <ListContainer>
-      <ListBox>
-        <ListUl>
-          <h3>채팅 목록</h3>
-          {chatList.length !== 0 ? (
-            chatList.map((list, i) => <ChatList key={i} chatList={list} />)
-          ) : (
-            <li>채팅방이 비어있습니다</li>
-          )}
-        </ListUl>
-      </ListBox>
-    </ListContainer>
+    <ListBox>
+      <ListUl>
+        <h3>채팅 목록</h3>
+        {chatList.length !== 0 ? (
+          chatList.map((list, i) => <ChatList key={i} chatList={list} />)
+        ) : (
+          <Empty>채팅방이 비어있습니다</Empty>
+        )}
+      </ListUl>
+    </ListBox>
   );
 }
 
@@ -50,20 +51,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(ChatBox);
-const ListContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100vw;
-  min-height: 100vh;
-`;
+export default connect(mapStateToProps)(Chat);
 const ListBox = styled.div`
-  border-radius: 15px;
-  padding: 2em;
-  min-height: 85vh;
-  width: 35%;
-  margin-left: 17vw;
+  position: absolute;
+  left: 17vw;
+  padding: 2em 0;
+  min-height: 100vh;
+  width: 25%;
   background-color: #ffffff;
   box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
 `;
@@ -72,21 +66,32 @@ const ListUl = styled.ul`
   height: 100%;
   & > h3 {
     font-weight: 700;
-    font-size: 1.7rem;
-    text-align: center;
-    margin: 1rem 0 2rem 0;
+    font-size: 1.5rem;
+    margin: 1rem 0 3rem 0;
+    padding: 0 1em;
   }
   & li {
     display: flex;
     align-items: center;
-    padding: 0 1em;
-    height: 4rem;
-    color: #6768ab;
-    box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
-    border-radius: 5px;
+    padding: 1em 2em;
+    height: 6rem;
+    background-color: #ffffff;
+    color: #444444;
+    border-bottom: 1px solid #eaeaea;
+    transition: all 0.2s ease-in-out;
     cursor: pointer;
     &:hover {
       background-color: #eaeaea;
     }
   }
+  & li:nth-child(2) {
+    border-top: 1px solid #eaeaea;
+  }
+`;
+
+const Empty = styled.li`
+  border: none;
+  text-align: center;
+  font-size: 1.4rem;
+  margin-top: 5rem;
 `;

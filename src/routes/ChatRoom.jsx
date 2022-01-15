@@ -10,13 +10,14 @@ import {
   where,
 } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../firebase';
 import { IoIosSend } from 'react-icons/io';
 import { AiFillDelete } from 'react-icons/ai';
 import { RiDeleteBackFill } from 'react-icons/ri';
 import { connect } from 'react-redux';
+import Chat from './Chat';
 
 function ChatRoom({ user }) {
   const [friend, setFriend] = useState({});
@@ -25,16 +26,19 @@ function ChatRoom({ user }) {
   const [chatRoomId, setChatRoomId] = useState('');
   const navigate = useNavigate();
   const params = useParams();
+  const location = useLocation();
+  const {
+    state: { friendObj },
+  } = location;
   const getChatroom = async () => {
     const userRef = collection(db, 'Users');
     const chatRef = collection(db, 'Chats');
     const q = query(
       chatRef,
-      where('people', 'array-contains-any', [user.uid, params.id])
+      where('people', 'array-contains-any', [user.uid, friendObj.uid])
     );
-    const q2 = query(userRef, where('uid', '==', params.id));
+    const q2 = query(userRef, where('uid', '==', friendObj.uid));
     const result = await getDocs(q);
-    const friendResult = await getDocs(q2);
     onSnapshot(q2, (snapshot) => {
       const friend = snapshot.docs.map((doc) => ({
         ...doc.data(),
@@ -103,6 +107,7 @@ function ChatRoom({ user }) {
   }, []);
   return (
     <ChatContainer>
+      <Chat />
       <ChatBox>
         <ChatHeader>
           <img src={friend.photoURL} alt="profile" />
@@ -122,12 +127,12 @@ function ChatRoom({ user }) {
                     <img src={friend.photoURL} alt="profile" />
                   </FriendProfile>
                 )}
-                <span>
+                <Balloon className={el.from === user.uid ? 'my' : 'other'}>
                   {el.text}
-                  <span className="chatTime">
+                  <ChatTime className="chatTime">
                     {convertDate(new Date(el.createdAt))}
-                  </span>
-                </span>
+                  </ChatTime>
+                </Balloon>
               </li>
             ))}
         </ChatUl>
@@ -161,25 +166,29 @@ const ChatContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  width: 100vw;
+  width: 83vw;
+  margin-left: 17vw;
 `;
 const ChatBox = styled.div`
   position: relative;
   border-radius: 15px;
-  padding: 1em 2em 3em;
-  height: 85%;
-  width: 35%;
+  /* padding: 1em 2em 3em; */
+  margin-left: 25vw;
+  height: 90%;
+  width: 55%;
   background-color: #ffffff;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
 `;
 const ChatHeader = styled.div`
   display: flex;
   align-items: center;
-  background-color: #eaeaea;
-  border-radius: 15px;
+  height: 4.5rem;
+  padding: 0 2em;
+  border-radius: 15px 15px 0 0;
+  box-shadow: 0px 8px 12px -2px rgba(0, 0, 0, 0.35);
   & > img {
-    border-radius: 15px;
-    margin-right: 1rem;
+    border-radius: 50%;
+    margin-right: 1.5rem;
   }
   & > h3 {
     font-size: 1.2rem;
@@ -187,9 +196,11 @@ const ChatHeader = styled.div`
   }
 `;
 const ChatUl = styled.ul`
-  height: 90%;
-  padding-top: 7%;
-  padding-bottom: 3%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 80%;
+  padding: 3em 3em 0 3em;
   overflow: scroll;
   & > li {
     display: flex;
@@ -203,8 +214,8 @@ const ChatUl = styled.ul`
       align-items: center;
       justify-content: center;
       background-color: #eaeaea;
-      max-width: 45%;
-      padding: 1em;
+      max-width: 48%;
+      padding: 1.3em;
       height: 80%;
       border-radius: 5px;
       & > span.chatTime {
@@ -220,6 +231,15 @@ const ChatUl = styled.ul`
   & > li.my {
     justify-content: flex-end;
   }
+`;
+const Balloon = styled.span`
+  &.my {
+    color: #ffffff;
+    background-color: #6768ab;
+  }
+`;
+const ChatTime = styled.span`
+  color: #444444;
 `;
 const FriendProfile = styled.div`
   position: relative;
@@ -266,15 +286,15 @@ const ChatSubmit = styled.button`
   margin-right: 0.8%;
 `;
 const ChatBtnBox = styled.div`
-  position: absolute;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  top: 3%;
-  right: 7%;
-  width: 8%;
+  margin-left: auto;
+  margin-right: 1%;
+  width: 4rem;
   & > svg {
     cursor: pointer;
+    font-size: 1.5rem;
     color: #444444;
   }
 `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { BsChatSquareFill } from 'react-icons/bs';
 import { FaUserFriends, FaHome, FaSearch, FaUser } from 'react-icons/fa';
@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import { MainLogo } from '../Image';
 
 function Sidebar({ user }) {
+  const location = useLocation();
+  const { pathname } = location;
   return (
     <SidebarContainer>
       <Logo to="/">
@@ -21,23 +23,23 @@ function Sidebar({ user }) {
         <h3>{user.displayName}</h3>
       </ProfileBox>
       <MenuList>
-        <li>
+        <li className={pathname === '/' ? 'activated' : null}>
           <FaHome />
           <Link to="/">삐삐 메인</Link>
         </li>
-        <li>
+        <li className={pathname === '/friends' ? 'activated' : null}>
           <FaUserFriends />
           <Link to="/friends">친구 목록</Link>
         </li>
-        <li>
+        <li className={pathname.includes('/chat') ? 'activated' : null}>
           <BsChatSquareFill />
           <Link to="/chat">채팅</Link>
         </li>
-        <li>
+        <li className={pathname === '/search' ? 'activated' : null}>
           <FaSearch />
           <Link to="/search">검색</Link>
         </li>
-        <li>
+        <li className={pathname.includes('Profile') ? 'activated' : null}>
           <FaUser />
           <Link to={`/myProfile`}>프로필</Link>
         </li>
@@ -105,6 +107,19 @@ const MenuList = styled.ul`
     height: 4rem;
     border-radius: 3px;
     transition: all 0.2s ease-in-out;
+    &.activated {
+      color: #ffffff;
+      &::before {
+        content: '';
+        opacity: 1;
+        position: absolute;
+        left: 0;
+        width: 5px;
+        height: 70%;
+        background-color: #ffffff;
+        border-radius: 5px;
+      }
+    }
   }
   & li:hover {
     color: #ffffff;
