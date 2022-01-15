@@ -96,7 +96,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps)(FriendHome);
 const FriendHomeContainer = styled.div`
-  min-height: 90vh;
+  min-height: 100vh;
   height: 100%;
   width: 70vw;
   margin: auto;

@@ -183,14 +183,15 @@ const AuthContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  height: 75vh;
+  height: 100vh;
 `;
 const AuthForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 30vw;
-  height: 80%;
+  height: 65%;
   margin: auto;
   padding: 1em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);

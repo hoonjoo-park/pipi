@@ -109,8 +109,10 @@ const ProfileContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 75vh;
+  width: 83vw;
+  height: 100vh;
+  margin: auto;
+  margin-left: 17vw;
 `;
 
 const ProfileBox = styled.ul`
@@ -164,7 +166,7 @@ const Edit = styled(Link)`
 `;
 const AlertContainer = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   height: 100%;
   margin-left: 5%;
@@ -172,15 +174,13 @@ const AlertContainer = styled.div`
 const AlertBox = styled.ul`
   display: flex;
   flex-direction: column;
-  width: 22vw;
-  min-height: 30vh;
-  max-height: 40%;
+  max-height: 500px;
+  height: 80%;
+  width: 20vw;
   overflow: scroll;
   padding: 2em 1.5em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
   border-radius: 15px;
-  margin-top: 25.5%;
-  margin-left: 10%;
   & > h3 {
     font-size: 1.5rem;
     font-weight: 600;

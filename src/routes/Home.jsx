@@ -77,7 +77,7 @@ function Home({ user }) {
         //   </div>
         //   {isSent && <h3>{user.email}으로 메일이 전송되었습니다</h3>}
         // </>
-        <>
+        <HomeBox>
           <ProfileBox>
             <h3>나의 삐삐</h3>
             <hr />
@@ -90,7 +90,7 @@ function Home({ user }) {
                 ))}
             </PipiBox>
           </PipiContainer>
-        </>
+        </HomeBox>
       )}
     </HomeContainer>
   );
@@ -103,14 +103,18 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(Home);
-
 const HomeContainer = styled.div`
-  display: inline-block;
-  /* border: 1px solid #444444; */
-  min-height: 85vh;
-  height: 100%;
-  width: 70vw;
-  margin: 2.5rem 0 0 24vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 83vw;
+  margin: auto;
+  margin-left: 17vw;
+`;
+const HomeBox = styled.div`
+  height: 93%;
+  width: 93%;
   padding: 1em;
   border-radius: 10px;
   box-shadow: 0px 3px 14px -3px rgba(0, 0, 0, 0.71);

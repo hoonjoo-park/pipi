@@ -32,6 +32,7 @@ function ChatBox({ chatRooms, user }) {
     <ListContainer>
       <ListBox>
         <ListUl>
+          <h3>채팅 목록</h3>
           {chatList.length !== 0 ? (
             chatList.map((list, i) => <ChatList key={i} chatList={list} />)
           ) : (
@@ -55,20 +56,26 @@ const ListContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  min-height: 90vh;
+  min-height: 100vh;
 `;
 const ListBox = styled.div`
   border-radius: 15px;
   padding: 2em;
-  min-height: 70vh;
-  width: 30%;
-  margin-right: 1rem;
+  min-height: 85vh;
+  width: 35%;
+  margin-left: 17vw;
   background-color: #ffffff;
   box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
 `;
 const ListUl = styled.ul`
   width: 100%;
   height: 100%;
+  & > h3 {
+    font-weight: 700;
+    font-size: 1.7rem;
+    text-align: center;
+    margin: 1rem 0 2rem 0;
+  }
   & li {
     display: flex;
     align-items: center;

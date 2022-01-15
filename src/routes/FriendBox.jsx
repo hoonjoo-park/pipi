@@ -10,7 +10,7 @@ function FriendBox({ user }) {
   return (
     <FriendListContainer>
       <FriendUl>
-        <h3>친구목록</h3>
+        <h3>친구 목록</h3>
         {friends.length !== 0 ? (
           friends.map((list, i) => <FriendLi key={i} friendId={list} />)
         ) : (
@@ -33,12 +33,12 @@ const FriendListContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100vw;
-  min-height: 90vh;
+  min-height: 100vh;
 `;
 const FriendUl = styled.ul`
-  /* min-width: 30vw; */
-  width: 30rem;
-  height: 70vh;
+  width: 33rem;
+  height: 75vh;
+  margin-left: 17vw;
   padding: 3em;
   border-radius: 15px;
   background-color: #ffffff;

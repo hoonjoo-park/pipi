@@ -7,8 +7,6 @@ import {
 } from 'react-router-dom';
 import Auth from '../routes/Auth';
 import Home from '../routes/Home';
-import Footer from './Footer';
-import Header from './Header';
 import Profile from '../routes/Profile';
 import EditProfile from '../routes/EditProfile';
 import Search from '../routes/Search';
@@ -21,7 +19,6 @@ import FriendBox from '../routes/FriendBox';
 import { connect } from 'react-redux';
 import Loading from './Loading';
 import Sidebar from './Sidebar';
-import MainView from './MainView';
 
 function AppRouter({ isLoading, user }) {
   const [requests, setRequests] = useState([]);
@@ -43,8 +40,7 @@ function AppRouter({ isLoading, user }) {
   console.log(user);
   return (
     <Router>
-      <Header requests={requests} />
-      <Sidebar />
+      {user && <Sidebar />}
       <Routes>
         <>
           {user && !isLoading ? (

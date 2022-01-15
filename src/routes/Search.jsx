@@ -83,9 +83,11 @@ const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 75vh;
-  width: 76vw;
+  justify-content: center;
+  height: 100vh;
+  width: 83vw;
   margin: auto;
+  margin-left: 17vw;
   padding: 1em;
 `;
 const FormContainer = styled.div`

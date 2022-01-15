@@ -160,7 +160,7 @@ const ChatContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 90vh;
+  height: 100vh;
   width: 100vw;
 `;
 const ChatBox = styled.div`

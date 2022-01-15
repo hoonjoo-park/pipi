@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import styled from 'styled-components';
 import { AiFillEdit, AiFillDelete } from 'react-icons/ai';
+import { FaCheckSquare } from 'react-icons/fa';
 import { MdOutlineCancel } from 'react-icons/md';
+import { BsFillChatSquareDotsFill } from 'react-icons/bs';
 import { connect } from 'react-redux';
 
 function Pipi({ pipi, user }) {
@@ -60,11 +62,6 @@ function Pipi({ pipi, user }) {
         <PipiItem id={pipi.id}>
           <ProfileBox>
             <PipiProfile to={`/profile/${owner.uid}`} src={owner.photoURL} />
-            {user.uid !== owner.uid && !isEdit && (
-              <CoverChat className="chatBtn" to={`/chat/${owner.uid}`}>
-                대화
-              </CoverChat>
-            )}
           </ProfileBox>
           {isEdit ? (
             <>
@@ -92,7 +89,16 @@ function Pipi({ pipi, user }) {
                   <h3>{owner.displayName}</h3>
                   <PipiTime>{convertDate(new Date(pipi.createdAt))}</PipiTime>
                 </BottomLeft>
-                <CoverCheck onClick={handleDelete}>확인</CoverCheck>
+                {user.uid !== owner.uid && !isEdit && (
+                  <ButtonBox>
+                    <CoverCheck onClick={handleDelete}>
+                      <FaCheckSquare />
+                    </CoverCheck>
+                    <CoverChat className="chatBtn" to={`/chat/${owner.uid}`}>
+                      <BsFillChatSquareDotsFill />
+                    </CoverChat>
+                  </ButtonBox>
+                )}
               </BottomBox>
             </>
           )}
@@ -127,15 +133,12 @@ const PipiItem = styled.div`
   align-items: center;
   position: relative;
   width: 75%;
-  height: 16rem;
+  height: 15rem;
   margin: 2rem auto;
   padding: 1em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);
   border-radius: 15px;
   &:hover #editBox {
-    opacity: 1;
-  }
-  &:hover .chatBtn {
     opacity: 1;
   }
 `;
@@ -157,15 +160,37 @@ const PipiProfile = styled(Link)`
   border-radius: 50%;
 `;
 
+const ButtonBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  width: 40%;
+`;
+
 const CoverChat = styled(Link)`
-  opacity: 0;
-  position: absolute;
-  right: 0;
-  padding: 0.5em;
-  color: #ffffff;
-  background-color: #1fab89;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  margin-left: 0.5rem;
+  font-size: 1.3rem;
+  color: #1fab89;
   border-radius: 10px;
+  transform: translateY(3%);
   transition: 0.2s ease-in-out;
+`;
+const CoverCheck = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  & > * {
+    font-size: 1.3rem;
+    color: #6768ab;
+  }
 `;
 
 const BottomBox = styled.div`
@@ -175,7 +200,7 @@ const BottomBox = styled.div`
   width: 100%;
   height: 15%;
   & h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-bottom: 0.3rem;
   }
 `;
@@ -183,7 +208,7 @@ const BottomLeft = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  font-size: 1.1rem;
+  font-size: 1rem;
   & > span {
     font-size: 0.9rem;
   }
@@ -191,17 +216,7 @@ const BottomLeft = styled.div`
 const PipiTime = styled.span`
   color: #9b9a9a;
 `;
-const CoverCheck = styled.div`
-  background-color: #6768ab;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 4rem;
-  height: 2rem;
-  border-radius: 10px;
-  color: #ffffff;
-  cursor: pointer;
-`;
+
 const TextBox = styled.div`
   width: 100%;
   height: 60%;
@@ -209,7 +224,7 @@ const TextBox = styled.div`
   display: flex;
   & > p {
     width: 100%;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 `;
 const EditForm = styled.form`
