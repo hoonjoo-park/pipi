@@ -9,14 +9,17 @@ function FriendBox({ user }) {
   }, []);
   return (
     <FriendListContainer>
-      <FriendUl>
+      <FriendFrame>
         <h3>친구 목록</h3>
-        {friends.length !== 0 ? (
-          friends.map((list, i) => <FriendLi key={i} friendId={list} />)
-        ) : (
-          <li>등록된 친구가 없습니다</li>
-        )}
-      </FriendUl>
+        <hr />
+        <FriendUl>
+          {friends.length !== 0 ? (
+            friends.map((list, i) => <FriendLi key={i} friendId={list} />)
+          ) : (
+            <li>등록된 친구가 없습니다</li>
+          )}
+        </FriendUl>
+      </FriendFrame>
     </FriendListContainer>
   );
 }
@@ -32,13 +35,13 @@ const FriendListContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
+  width: 83vw;
   min-height: 100vh;
-`;
-const FriendUl = styled.ul`
-  width: 33rem;
-  height: 75vh;
   margin-left: 17vw;
+`;
+const FriendFrame = styled.div`
+  width: 80%;
+  height: 85vh;
   padding: 3em;
   border-radius: 15px;
   background-color: #ffffff;
@@ -46,8 +49,22 @@ const FriendUl = styled.ul`
   overflow: scroll;
   & > h3 {
     font-weight: 700;
-    font-size: 1.7rem;
-    text-align: center;
-    margin: 1rem 0 2rem 0;
+    font-size: 1.5rem;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 2rem;
+    margin-bottom: 1rem;
   }
+  & > hr {
+    height: 2px;
+    border: none;
+    background-color: #eaeaea;
+    border-radius: 5px;
+    margin-bottom: 2rem;
+  }
+`;
+const FriendUl = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  width: 100%;
+  height: 90%;
 `;
