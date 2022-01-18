@@ -1,5 +1,6 @@
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../firebase';
 
@@ -19,7 +20,7 @@ function FriendLi({ friendId }) {
     });
   };
   return (
-    <Li>
+    <Li to={`/profile/${friendId}`}>
       <img src={userInfo.photoURL} alt="profile" />
       <span>{userInfo.displayName}</span>
     </Li>
@@ -28,7 +29,7 @@ function FriendLi({ friendId }) {
 
 export default FriendLi;
 
-const Li = styled.li`
+const Li = styled(Link)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,6 +39,10 @@ const Li = styled.li`
   background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0px 3px 8px -3px rgba(0, 0, 0, 0.71);
+  transition: all 0.2s;
+  &:hover {
+    transform: scale(1.05);
+  }
   & > img {
     height: 4rem;
     border-radius: 50%;

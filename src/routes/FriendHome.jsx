@@ -51,39 +51,41 @@ function FriendHome({ user, friendObj }) {
   };
   return (
     <FriendHomeContainer>
-      <TopBox>
-        <ProfileBox>
-          <img
-            src={friendObj.photoURL}
-            style={{ borderRadius: '50%' }}
-            alt="profile"
-          />
-          <h3>{friendObj.displayName}</h3>
-        </ProfileBox>
-        <FormContainer onSubmit={handlePipiSubmit}>
-          <img src={user.photoURL} alt="profile" />
-          <form>
-            <FormText
-              type="text"
-              name="pipiContent"
-              id="pipiContent"
-              value={pipiText}
-              onChange={handlePipiChange}
-              placeholder="당신의 삐삐를 날려보세요!"
-              autoComplete="off"
+      <FriendHomeBox>
+        <TopBox>
+          <ProfileBox>
+            <img
+              src={friendObj.photoURL}
+              style={{ borderRadius: '50%' }}
+              alt="profile"
             />
-            <SendBtn type="submit" value="송신" />
-          </form>
-        </FormContainer>
-      </TopBox>
-      <HR />
+            <h3>{friendObj.displayName}</h3>
+          </ProfileBox>
+          <FormContainer onSubmit={handlePipiSubmit}>
+            <img src={user.photoURL} alt="profile" />
+            <form>
+              <FormText
+                type="text"
+                name="pipiContent"
+                id="pipiContent"
+                value={pipiText}
+                onChange={handlePipiChange}
+                placeholder="당신의 삐삐를 날려보세요!"
+                autoComplete="off"
+              />
+              <SendBtn type="submit" value="송신" />
+            </form>
+          </FormContainer>
+        </TopBox>
+        <HR />
 
-      <PipiContainer>
-        <PipiBox>
-          {pipiArray.length > 0 &&
-            pipiArray.map((pipi) => <Pipi key={pipi.id} pipi={pipi} />)}
-        </PipiBox>
-      </PipiContainer>
+        <PipiContainer>
+          <PipiBox>
+            {pipiArray.length > 0 &&
+              pipiArray.map((pipi) => <Pipi key={pipi.id} pipi={pipi} />)}
+          </PipiBox>
+        </PipiContainer>
+      </FriendHomeBox>
     </FriendHomeContainer>
   );
 }
@@ -96,11 +98,20 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps)(FriendHome);
 const FriendHomeContainer = styled.div`
-  min-height: 100vh;
-  height: 100%;
-  width: 70vw;
-  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 83vw;
+  margin-left: 17vw;
   padding: 1em;
+`;
+const FriendHomeBox = styled.div`
+  width: 90%;
+  height: 90%;
+  padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0px 3px 14px -3px rgba(0, 0, 0, 0.71);
 `;
 const TopBox = styled.div`
   display: flex;
