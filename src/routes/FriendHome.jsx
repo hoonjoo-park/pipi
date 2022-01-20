@@ -56,7 +56,7 @@ function FriendHome({ user, friendObj }) {
           <ProfileBox>
             <img
               src={friendObj.photoURL}
-              style={{ borderRadius: '50%' }}
+              style={{ borderRadius: 15 }}
               alt="profile"
             />
             <h3>{friendObj.displayName}</h3>
@@ -116,20 +116,17 @@ const FriendHomeBox = styled.div`
 const TopBox = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  margin-top: 2rem;
-  height: 14rem;
+  justify-content: space-between;
+  height: 5rem;
 `;
 const ProfileBox = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 25%;
-  height: 10rem;
+  justify-content: space-around;
+  width: 10%;
+  height: 5rem;
   & > img {
-    width: 5rem;
-    margin-bottom: 1rem;
+    width: 3rem;
   }
   & > h3 {
     font-size: 1.2rem;
@@ -147,22 +144,23 @@ const HR = styled.hr`
 const FormContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-between;
   width: 50%;
-  height: 10rem;
-  margin-left: auto;
-  margin-right: 5rem;
+  height: 5rem;
+  padding: 0 1em;
+  /* margin-left: auto;
+  margin-right: 5rem; */
   border: 1px solid #eaeaea;
   border-radius: 20px;
   & > form {
     display: flex;
     align-items: center;
-    flex-basis: 80%;
+    flex-basis: 85%;
   }
   & > img {
     display: block;
-    height: 5rem;
-    width: 5rem;
+    height: 3rem;
+    width: 3rem;
     border-radius: 15px;
   }
 `;
@@ -185,10 +183,19 @@ const SendBtn = styled.input`
 `;
 const PipiContainer = styled.div`
   width: 100%;
-  margin-top: 3rem;
+  height: 61%;
+  overflow: scroll;
+  margin-top: 1.5rem;
 `;
 const PipiBox = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
   width: 100%;
+  padding: 1em;
+  & > div {
+    width: 20%;
+    margin: 0;
+  }
 `;

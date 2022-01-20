@@ -146,9 +146,19 @@ const ProfileBox = styled.div`
 
 const PipiContainer = styled.div`
   width: 100%;
+  height: 87%;
+  overflow: scroll;
+  margin-top: 1.5rem;
 `;
 const PipiBox = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
   width: 100%;
+  padding: 1em;
+  & > div {
+    width: 20%;
+    margin: 0;
+  }
 `;

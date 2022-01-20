@@ -129,8 +129,9 @@ const EditProfileContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 75vh;
+  width: 83vw;
+  height: 100vh;
+  margin-left: 17vw;
 `;
 const EditForm = styled.form`
   display: flex;
@@ -138,7 +139,7 @@ const EditForm = styled.form`
   justify-content: center;
   align-items: center;
   width: 30vw;
-  height: 85%;
+  height: 65%;
   margin: auto;
   padding: 2.5em;
   box-shadow: 0px 2px 5px 1px rgb(0 0 0 / 31%);

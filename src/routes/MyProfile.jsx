@@ -15,8 +15,10 @@ function MyProfile({ user, clearUser, requests }) {
     try {
       await clearUser();
       signOut(auth);
-      navigate('/');
-      window.location.reload();
+      setTimeout(() => {
+        navigate('/');
+        window.location.reload();
+      }, 100);
     } catch (error) {
       console.log(error);
     }
