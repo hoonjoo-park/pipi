@@ -6,7 +6,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../firebase';
@@ -17,7 +17,7 @@ function FriendHome({ user, friendObj }) {
   const [pipiText, setPipiText] = useState('');
   const [pipiArray, setPipiArray] = useState([]);
   const param = useParams();
-  const pipiSnapshot = () => {
+  const pipiSnapshot = useCallback(() => {
     const querySet = query(
       collection(db, 'Pipi'),
       where('to', 'array-contains', param.id)
@@ -29,10 +29,10 @@ function FriendHome({ user, friendObj }) {
       }));
       setPipiArray(newPipiArray);
     });
-  };
+  }, [param.id]);
   useEffect(() => {
     pipiSnapshot();
-  }, []);
+  }, [pipiSnapshot]);
   const handlePipiChange = (e) => {
     const {
       target: { value },

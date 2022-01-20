@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   HashRouter as Router,
   Routes,
@@ -17,12 +17,11 @@ import Chat from '../routes/Chat';
 import ChatRoom from '../routes/ChatRoom';
 import FriendBox from '../routes/FriendBox';
 import { connect } from 'react-redux';
-import Loading from './Loading';
 import Sidebar from './Sidebar';
 
 function AppRouter({ isLoading, user }) {
   const [requests, setRequests] = useState([]);
-  const getRequests = () => {
+  const getRequests = useCallback(() => {
     if (!user) {
       return;
     }
@@ -33,11 +32,10 @@ function AppRouter({ isLoading, user }) {
         setRequests(reqs.requests);
       }
     });
-  };
+  }, [user]);
   useEffect(() => {
     getRequests();
-  }, []);
-  console.log(user);
+  }, [getRequests]);
   return (
     <Router>
       {user && <Sidebar />}
@@ -62,7 +60,6 @@ function AppRouter({ isLoading, user }) {
         </>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
-      {/* <Footer /> */}
     </Router>
   );
 }

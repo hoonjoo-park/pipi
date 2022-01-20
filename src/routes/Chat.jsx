@@ -1,11 +1,5 @@
-import {
-  collection,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { db } from '../firebase';
 import ChatList from '../components/ChatList';
@@ -13,7 +7,7 @@ import { connect } from 'react-redux';
 
 function Chat({ user }) {
   const [chatList, setChatList] = useState([]);
-  const getChatList = async () => {
+  const getChatList = useCallback(async () => {
     const chatRef = collection(db, 'Chats');
     const q = query(chatRef, where('people', 'array-contains-any', [user.uid]));
     onSnapshot(q, (snapshot) => {
@@ -23,14 +17,10 @@ function Chat({ user }) {
       }));
       setChatList(chats);
     });
-  };
-  const handleClick = () => {
-    console.log('hi');
-  };
+  }, [user.uid]);
   useEffect(() => {
     getChatList();
-  }, []);
-  console.log(chatList);
+  }, [getChatList]);
   return (
     <ListBox>
       <ListUl>

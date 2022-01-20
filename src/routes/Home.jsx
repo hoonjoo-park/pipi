@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { sendEmailVerification } from 'firebase/auth';
-import { auth, db } from '../firebase';
+import React, { useState, useEffect, useCallback } from 'react';
+import { db } from '../firebase';
 import styled from 'styled-components';
 import {
   collection,
@@ -16,13 +15,8 @@ import { connect } from 'react-redux';
 import Loading from '../components/Loading';
 
 function Home({ user }) {
-  const [isSent, setIsSent] = useState(false);
   const [pipiArray, setPipiArray] = useState([]);
-  // const handleVerify = () => {
-  //   setIsSent(true);
-  //   sendEmailVerification(auth.currentUser);
-  // };
-  const pipiSnapshot = () => {
+  const pipiSnapshot = useCallback(() => {
     const querySet = query(
       collection(db, 'Pipi'),
       where('to', 'array-contains', user.uid)
@@ -34,8 +28,8 @@ function Home({ user }) {
       }));
       setPipiArray(newPipiArray);
     });
-  };
-  const checkRequests = async () => {
+  }, [user.uid]);
+  const checkRequests = useCallback(async () => {
     if (!user) {
       return;
     }
@@ -60,11 +54,11 @@ function Home({ user }) {
       });
     } else {
     }
-  };
+  }, [user]);
   useEffect(() => {
     checkRequests();
     pipiSnapshot();
-  }, []);
+  }, [checkRequests, pipiSnapshot]);
   return (
     <HomeContainer>
       {!user ? (

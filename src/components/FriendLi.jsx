@@ -1,15 +1,12 @@
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../firebase';
 
 function FriendLi({ friendId }) {
   const [userInfo, setUserInfo] = useState({});
-  useEffect(() => {
-    getUserInfo();
-  }, []);
-  const getUserInfo = async () => {
+  const getUserInfo = useCallback(async () => {
     const userRef = collection(db, 'Users');
     const q = query(userRef, where('uid', '==', friendId));
     onSnapshot(q, (snapshot) => {
@@ -18,7 +15,10 @@ function FriendLi({ friendId }) {
       }));
       setUserInfo(result[0]);
     });
-  };
+  }, [friendId]);
+  useEffect(() => {
+    getUserInfo();
+  }, [getUserInfo]);
   return (
     <Li to={`/profile/${friendId}`}>
       <img src={userInfo.photoURL} alt="profile" />

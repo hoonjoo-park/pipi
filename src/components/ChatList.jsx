@@ -1,5 +1,5 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { db } from '../firebase';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,7 +10,7 @@ function ChatList({ user, chatList }) {
   const [isActive, setIsActive] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
-  const getUser = async () => {
+  const getUser = useCallback(async () => {
     const friendId = chatList.people.filter((el) => el !== user.uid);
     const docRef = collection(db, 'Users');
     const q = query(docRef, where('uid', '==', friendId[0]));
@@ -18,22 +18,22 @@ function ChatList({ user, chatList }) {
     querySnapshot.forEach((doc) => {
       setFriendObj(doc.data());
     });
-  };
+  }, [chatList.people, user.uid]);
   const toChatRoom = () => {
     setIsActive((og) => !og);
     navigate(`/chat/${chatList.id}`, { state: { friendObj: friendObj } });
   };
-  const handleColor = () => {
+  const handleColor = useCallback(() => {
     if (params.id === chatList.id) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
-  };
+  }, [params.id, chatList.id]);
   useEffect(() => {
     handleColor();
     getUser();
-  }, []);
+  }, [handleColor, getUser]);
   return (
     <Li onClick={toChatRoom} className={isActive ? 'active' : ''}>
       <ProfileImg src={friendObj.photoURL} alt="profile" />

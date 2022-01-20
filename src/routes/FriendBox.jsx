@@ -6,7 +6,7 @@ function FriendBox({ user }) {
   const [friends, setFriends] = useState([]);
   useEffect(() => {
     setFriends(user.friends);
-  }, []);
+  }, [user.friends]);
   return (
     <FriendListContainer>
       <FriendFrame>

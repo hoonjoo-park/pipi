@@ -73,7 +73,7 @@ function EditProfile({ refreshUser, user }) {
   };
   useEffect(() => {
     auth.currentUser.uid !== param.id && navigate('/');
-  }, [param.id]);
+  }, [param.id, navigate]);
   return (
     <EditProfileContainer>
       <EditForm onSubmit={handleSubmit}>

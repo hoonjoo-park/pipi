@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import {
@@ -21,7 +21,16 @@ function Profile({ user }) {
   const [friendObj, setFriendObj] = useState({});
   const [isFriend, setIsFriend] = useState(false);
   const { id } = useParams();
-  const getUser = async () => {
+  const checkFriend = useCallback(
+    async (friend) => {
+      if (user.friends.length > 0) {
+        user.friends.includes(friend.uid) && setIsFriend(true);
+      }
+      setIsLoading(false);
+    },
+    [user.friends]
+  );
+  const getUser = useCallback(async () => {
     const docRef = collection(db, 'Users');
     const q = query(docRef, where('uid', '==', id));
     const querySnapshot = await getDocs(q);
@@ -29,13 +38,7 @@ function Profile({ user }) {
       checkFriend(doc.data());
       setFriendObj(doc.data());
     });
-  };
-  const checkFriend = async (friend) => {
-    if (user.friends.length > 0) {
-      user.friends.includes(friend.uid) && setIsFriend(true);
-    }
-    setIsLoading(false);
-  };
+  }, [id, checkFriend]);
   const updatePending = () => {
     const toUpdate = doc(db, 'Users', `${user.email}`);
     updateDoc(toUpdate, {
@@ -74,10 +77,9 @@ function Profile({ user }) {
       updatePending();
     }
   };
-  console.log(user, isFriend);
   useEffect(() => {
     getUser();
-  }, []);
+  }, [getUser]);
   return (
     <>
       {isLoading ? (

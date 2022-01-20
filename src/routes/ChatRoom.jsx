@@ -9,7 +9,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { db } from '../firebase';
@@ -30,7 +30,13 @@ function ChatRoom({ user }) {
   const {
     state: { friendObj },
   } = location;
-  const getChatroom = async () => {
+  const setChatroom = useCallback(async () => {
+    await addDoc(collection(db, 'Chats'), {
+      people: [user.uid, params.id],
+      chats: [],
+    });
+  }, [params.id, user.uid]);
+  const getChatroom = useCallback(async () => {
     const userRef = collection(db, 'Users');
     const chatRef = collection(db, 'Chats');
     const q = query(
@@ -57,13 +63,8 @@ function ChatRoom({ user }) {
         setChat(chats[0].chats);
       });
     }
-  };
-  const setChatroom = async () => {
-    await addDoc(collection(db, 'Chats'), {
-      people: [user.uid, params.id],
-      chats: [],
-    });
-  };
+  }, [friendObj.uid, user.uid, setChatroom]);
+
   const handleType = (e) => {
     const {
       target: { value },
@@ -104,7 +105,7 @@ function ChatRoom({ user }) {
   };
   useEffect(() => {
     getChatroom();
-  }, []);
+  }, [getChatroom]);
   return (
     <ChatContainer>
       <Chat />

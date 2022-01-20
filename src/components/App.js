@@ -9,34 +9,31 @@ import { updateUser, clearUser } from '../redux/authentication/userUpdate';
 
 function App({ user, updateUser }) {
   const [isLoading, setIsLoading] = useState(true);
-  const userSnapshot = async (user) => {
-    const userRef = doc(db, 'Users', auth.currentUser.email);
-    if (!user.displayName) {
-      onSnapshot(userRef, async (snapshot) => {
-        const newUserObject = {
-          displayName: 'User',
-          ...snapshot.data(),
-        };
-        await updateUser(newUserObject);
-        return setIsLoading(false);
-      });
-    }
-    onSnapshot(userRef, async (snapshot) => {
-      await updateUser(snapshot.data());
-      return setIsLoading(false);
-    });
-  };
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsLoading(true);
-        userSnapshot(user);
+        const userRef = doc(db, 'Users', auth.currentUser.email);
+        if (!user.displayName) {
+          onSnapshot(userRef, async (snapshot) => {
+            const newUserObject = {
+              displayName: 'User',
+              ...snapshot.data(),
+            };
+            await updateUser(newUserObject);
+            return setIsLoading(false);
+          });
+        }
+        onSnapshot(userRef, async (snapshot) => {
+          await updateUser(snapshot.data());
+          return setIsLoading(false);
+        });
       } else {
         setIsLoading(true);
         setIsLoading(false);
       }
     });
-  }, []);
+  }, [updateUser]);
   return (
     <>
       {isLoading ? (

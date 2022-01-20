@@ -44,7 +44,7 @@ function Pipi({ pipi, user }) {
       setOwner(convert.data());
     };
     converter();
-  }, []);
+  }, [pipi.owner]);
   const convertDate = (date) => {
     let year = date.getFullYear();
     let month = (date.getMonth() + 1).toString();
